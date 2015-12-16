@@ -22,5 +22,9 @@ class Auto {
 	private $make_id;
 	private $model_id;
 	private $year;
-	private $odomter_reading;
+	private $odometer_reading;
+	private $is_visible = FALSE;
+	private $created_at;
+	private $imported_at;
+	private $updated_at;
 }
