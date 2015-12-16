@@ -11,3 +11,11 @@
  * Network:
  * License: GPL2
  */
+
+require_once ( 'classes/Auto.php' );
+require_once ( 'classes/AutoFeature.php' );
+require_once ( 'classes/AutoType.php' );
+require_once ( 'classes/Feature.php' );
+require_once ( 'classes/FeatureOption.php' );
+require_once ( 'classes/Make.php' );
+require_once ( 'classes/Model.php' );
