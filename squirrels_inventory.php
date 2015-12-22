@@ -21,13 +21,22 @@ require_once ( 'classes/FeatureOption.php' );
 require_once ( 'classes/Make.php' );
 require_once ( 'classes/Model.php' );
 
+/** controller object */
 $squirrel = new \SquirrelsInventory\Controller;
 
+/** Initialize any variables that the plugin needs */
 add_action( 'init', array( $squirrel, 'init' ) );
+
+/** Create any custom post types */
 add_action( 'init', array( $squirrel, 'createPostTypes' ) );
 
+/** Only run these hooks if logged into the admin screen */
 if ( is_admin() )
 {
+	/** Add main menu and sub-menus */
 	add_action( 'admin_menu', array( $squirrel, 'addMenus') );
+
+	/** Create custom attributes for Model post types */
+	add_action ( 'add_meta_boxes_squirrels_model', array( $squirrel, 'customModelMeta' ) );
 }
 

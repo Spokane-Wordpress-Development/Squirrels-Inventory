@@ -16,6 +16,19 @@ class Model {
 	private $title;
 
 	/**
+	 * Model constructor.
+	 *
+	 * @param null $id
+	 * @param null $title
+	 */
+	public function __construct( $id=NULL, $title=NULL )
+	{
+		$this
+			->setId( $id )
+			->setTitle( $title );
+	}
+
+	/**
 	 * @return Make
 	 */
 	public function getMake()
@@ -100,4 +113,17 @@ class Model {
 
 		return $this;
 	}
+
+	/**
+	 * @return Model[]
+	 */
+	public static function getAllModels()
+	{
+		$models = array();
+		$makes = Make::getAllMakes();
+
+		return $models;
+	}
+
+
 }

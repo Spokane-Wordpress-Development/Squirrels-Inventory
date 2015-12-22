@@ -8,11 +8,26 @@ namespace SquirrelsInventory;
 
 class Make {
 
+	const CUSTOM_POST_TYPE = 'squirrels_make';
+
 	/** @var Model[] $models */
 	private $models;
 
 	private $id;
 	private $title;
+
+	/**
+	 * Make constructor.
+	 *
+	 * @param null $id
+	 * @param null $title
+	 */
+	public function __construct( $id=NULL, $title=NULL )
+	{
+		$this
+			->setId( $id )
+			->setTitle( $title );
+	}
 
 	/**
 	 * @return Model[]
@@ -75,5 +90,29 @@ class Make {
 		$this->title = $title;
 
 		return $this;
+	}
+
+	/**
+	 * @return Make[]
+	 */
+	public static function getAllMakes()
+	{
+		$makes = array();
+
+		$query = new \WP_Query( array(
+			'post_type' => self::CUSTOM_POST_TYPE,
+			'post_status' => 'publish',
+			'posts_per_page' => -1,
+			'order_by' => 'post_title'
+		) );
+
+		if( $query->have_posts() ) {
+			while ( $query->have_posts() ) : $query->the_post();
+				$make = new Make( get_the_ID(), get_the_title() );
+				$makes[ get_the_ID() ] = $make;
+			endwhile;
+		}
+
+		return $makes;
 	}
 }
