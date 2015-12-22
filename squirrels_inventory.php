@@ -12,6 +12,7 @@
  * License: GPL2
  */
 
+require_once ( 'classes/Controller.php' );
 require_once ( 'classes/Auto.php' );
 require_once ( 'classes/AutoFeature.php' );
 require_once ( 'classes/AutoType.php' );
@@ -19,3 +20,14 @@ require_once ( 'classes/Feature.php' );
 require_once ( 'classes/FeatureOption.php' );
 require_once ( 'classes/Make.php' );
 require_once ( 'classes/Model.php' );
+
+$squirrel = new \SquirrelsInventory\Controller;
+
+add_action( 'init', array( $squirrel, 'init' ) );
+add_action( 'init', array( $squirrel, 'createPostTypes' ) );
+
+if ( is_admin() )
+{
+	add_action( 'admin_menu', array( $squirrel, 'addMenus') );
+}
+
