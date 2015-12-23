@@ -6,6 +6,38 @@ class Controller {
 
 	const DOMAIN = 'squirrels_inventory';
 
+	public function activate()
+	{
+		$makes = $this->getMakesModels();
+		foreach ( $makes as $make_data )
+		{
+			$make = new Make;
+			$make
+				->setTitle( $make_data['title'] )
+				->create();
+
+			foreach ( $make_data['models'] as $model_data )
+			{
+				$title = $model_data['title'];
+				$pos = strpos( $title, 'Model' );
+				if ( $pos === FALSE )
+				{
+					$model = new Model;
+					$model
+						->setTitle( $title )
+						->setMakeId( $make->getId() )
+						->create();
+				}
+			}
+		}
+	}
+
+	private function getMakesModels()
+	{
+		$json = file_get_contents( dirname( __DIR__ ) . '/includes/makes_models.inc' );
+		return json_decode( $json, TRUE );
+	}
+
 	public function init()
 	{
 		if ( !session_id() )
@@ -21,6 +53,11 @@ class Controller {
 			->createPostType('Model');
 	}
 
+	/**
+	 * @param $title
+	 *
+	 * @return $this
+	 */
 	private function createPostType( $title )
 	{
 		$labels = array (
@@ -67,5 +104,52 @@ class Controller {
 	public function modelMeta()
 	{
 		include( dirname( __DIR__ ) ) . '/includes/model_meta.inc';
+	}
+
+	public function saveModelMeta( $post_id, $post )
+	{
+		if ( $post->post_type != Model::CUSTOM_POST_TYPE )
+		{
+			return;
+		}
+
+		if ( isset( $_REQUEST[ 'make_id' ] ) )
+		{
+			$make_id = $_REQUEST[ 'make_id' ];
+
+			if ( strlen( $make_id ) == 0 )
+			{
+				if ( strlen( $_REQUEST[ 'make' ] ) > 0 )
+				{
+					$make = new Make;
+					$make
+						->setTitle( $_REQUEST['make'] )
+						->create();
+
+					$make_id = $make->getId();
+				}
+			}
+
+			if ( strlen( $make_id ) > 0 )
+			{
+				update_post_meta( $post_id, 'make_id', $make_id);
+			}
+		}
+	}
+
+	public function changeDefaultPlaceholders( $title )
+	{
+		$screen = get_current_screen();
+		switch ( $screen->post_type )
+		{
+			case Make::CUSTOM_POST_TYPE:
+				$title = 'Ex: Ford';
+				break;
+			case Model::CUSTOM_POST_TYPE:
+				$title = 'Ex: Mustang';
+				break;
+		}
+
+		return $title;
 	}
 }

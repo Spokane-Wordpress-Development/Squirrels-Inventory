@@ -2,7 +2,7 @@
 
 global $post;
 $custom = get_post_custom( $post->ID );
-$make_id = ( array_key_exists( 'make_id', $custom ) ) ? $custom[ 'make_id' ] : '';
+$make_id = ( array_key_exists( 'make_id', $custom ) ) ? $custom[ 'make_id' ][0] : '';
 $makes = \SquirrelsInventory\Make::getAllMakes();
 
 ?>

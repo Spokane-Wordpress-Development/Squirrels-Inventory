@@ -29,6 +29,37 @@ class Make {
 			->setTitle( $title );
 	}
 
+	public function create()
+	{
+		if ( strlen( $this->title ) > 0 )
+		{
+			$this->getIdFromTitle();
+			if ( $this->id === NULL )
+			{
+				$this->id = wp_insert_post( array(
+					'post_title' => $this->title,
+					'post_type' => self::CUSTOM_POST_TYPE,
+					'post_status' => 'publish'
+				), TRUE );
+			}
+		}
+	}
+
+	public function getIdFromTitle()
+	{
+		$query = new \WP_Query( array(
+			'post_type' => self::CUSTOM_POST_TYPE,
+			'post_status' => 'publish',
+			'title' => $this->title
+		) );
+
+		if ( $query->have_posts() )
+		{
+			$query->the_post();
+			$this->id = get_the_ID();
+		}
+	}
+
 	/**
 	 * @return Model[]
 	 */

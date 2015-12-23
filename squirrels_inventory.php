@@ -24,6 +24,9 @@ require_once ( 'classes/Model.php' );
 /** controller object */
 $squirrel = new \SquirrelsInventory\Controller;
 
+/** Activitate */
+register_activation_hook( __FILE__, array( $squirrel, 'activate') );
+
 /** Initialize any variables that the plugin needs */
 add_action( 'init', array( $squirrel, 'init' ) );
 
@@ -36,7 +39,13 @@ if ( is_admin() )
 	/** Add main menu and sub-menus */
 	add_action( 'admin_menu', array( $squirrel, 'addMenus') );
 
+	/** Change default placeholders */
+	add_filter( 'enter_title_here', array( $squirrel, 'changeDefaultPlaceholders' ) );
+
 	/** Create custom attributes for Model post types */
-	add_action ( 'add_meta_boxes_squirrels_model', array( $squirrel, 'customModelMeta' ) );
+	add_action( 'add_meta_boxes_squirrels_model', array( $squirrel, 'customModelMeta' ) );
+
+	/** Save Model meta */
+	add_action( 'save_post', array( $squirrel, 'saveModelMeta' ), 10, 2 );
 }
 
