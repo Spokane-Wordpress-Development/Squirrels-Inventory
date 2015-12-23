@@ -19,8 +19,26 @@ class Controller {
 			foreach ( $make_data['models'] as $model_data )
 			{
 				$title = $model_data['title'];
-				$pos = strpos( $title, 'Model' );
-				if ( $pos === FALSE )
+				$create = TRUE;
+
+				preg_match('#\((.*?)\)#', $title, $matches);
+				if ( count( $matches ) > 0 )
+				{
+					if ( is_numeric( $matches[ 1 ] ) )
+					{
+						$create = FALSE;
+					}
+				}
+
+				$title = str_replace( ' - ', '', $title );
+
+				$pos = strpos( $title, 'Other' );
+				if ( $pos !== FALSE )
+				{
+					$create = FALSE;
+				}
+
+				if ( $create )
 				{
 					$model = new Model;
 					$model
