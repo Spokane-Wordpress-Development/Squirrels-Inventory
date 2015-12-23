@@ -43,9 +43,13 @@ if ( is_admin() )
 	add_filter( 'enter_title_here', array( $squirrel, 'changeDefaultPlaceholders' ) );
 
 	/** Create custom attributes for Model post types */
-	add_action( 'add_meta_boxes_squirrels_model', array( $squirrel, 'customModelMeta' ) );
+	add_action( 'add_meta_boxes_' . \SquirrelsInventory\Model::CUSTOM_POST_TYPE, array( $squirrel, 'customModelMeta' ) );
 
 	/** Save Model meta */
 	add_action( 'save_post', array( $squirrel, 'saveModelMeta' ), 10, 2 );
+
+	/** Add Make column to Model list */
+	add_filter( 'manage_' . \SquirrelsInventory\Model::CUSTOM_POST_TYPE . '_posts_columns', array( $squirrel, 'addMakeColumnToModelList' ) );
+	add_action( 'manage_' . \SquirrelsInventory\Model::CUSTOM_POST_TYPE . '_posts_custom_column' , array( $squirrel, 'customModelColumns' ) );
 }
 

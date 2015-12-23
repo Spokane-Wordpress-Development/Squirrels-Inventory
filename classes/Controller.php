@@ -152,4 +152,36 @@ class Controller {
 
 		return $title;
 	}
+
+	public function addMakeColumnToModelList( $columns )
+	{
+		$new = array(
+			'make_id' => 'Make'
+		);
+		$columns = array_slice( $columns, 0, 1, TRUE ) + $new + array_slice( $columns, 1, NULL, TRUE );
+		$columns['title'] = 'Model';
+		return $columns;
+	}
+
+	/**
+	 * Make::getAllMakes updates the global $post variable,
+	 * which is why I'm assigning it to a temp variable below
+	 *
+	 * @param $column
+	 */
+	public function customModelColumns( $column )
+	{
+		$post = $GLOBALS['post'];
+		$makes = Make::getAllMakes();
+		$GLOBALS['post'] = $post;
+
+		if ($column == 'make_id')
+		{
+			$make_id = get_post_meta( $post->ID, 'make_id', TRUE);
+			if ( array_key_exists( $make_id, $makes ) )
+			{
+				echo $makes[ $make_id ]->getTitle();
+			}
+		}
+	}
 }
