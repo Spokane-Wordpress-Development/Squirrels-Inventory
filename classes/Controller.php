@@ -156,10 +156,10 @@ class Controller {
 	public function addMakeColumnToModelList( $columns )
 	{
 		$new = array(
-			'make_id' => 'Make'
+			'make_id' => __( 'Make', self::DOMAIN)
 		);
 		$columns = array_slice( $columns, 0, 1, TRUE ) + $new + array_slice( $columns, 1, NULL, TRUE );
-		$columns['title'] = 'Model';
+		$columns['title'] = __( 'Model', self::DOMAIN);
 		return $columns;
 	}
 
