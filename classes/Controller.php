@@ -108,10 +108,18 @@ class Controller {
 
 	public function addMenus()
 	{
-		add_menu_page('Squirrels Inventory', 'Squirrels', 'manage_options', 'squirrels_inventory', array( $this, 'plugin_settings_page' ), 'dashicons-list-view');
+		add_menu_page('Squirrels Inventory', 'Squirrels', 'manage_options', 'squirrels_inventory', array( $this, 'pluginSettingsPage' ), 'dashicons-list-view');
 		add_submenu_page('squirrels_inventory', __( 'Inventory', self::DOMAIN ), __( 'Inventory', self::DOMAIN ), 'manage_options', 'squirrels_inventory');
-		add_submenu_page('squirrels_inventory', __( 'Makes', self::DOMAIN ), __( 'Makes', self::DOMAIN ), 'manage_options', 'edit.php?post_type=squirrels_make');
-		add_submenu_page('squirrels_inventory', __( 'Models', self::DOMAIN ), __( 'Models', self::DOMAIN ), 'manage_options', 'edit.php?post_type=squirrels_model');
+		add_submenu_page('squirrels_inventory', __( 'Makes', self::DOMAIN ), __( 'Makes', self::DOMAIN ), 'manage_options', 'edit.php?post_type=squirrels_make&order=asc');
+		add_submenu_page('squirrels_inventory', __( 'Models', self::DOMAIN ), __( 'Models', self::DOMAIN ), 'manage_options', 'edit.php?post_type=squirrels_model&order=asc');
+	}
+
+	/**
+	 * TODO: This
+	 */
+	public function pluginSettingsPage()
+	{
+		echo '<h1>Squirrels Inventory Settings</h1>';
 	}
 
 	public function customModelMeta()
@@ -176,8 +184,11 @@ class Controller {
 		$new = array(
 			'make_id' => __( 'Make', self::DOMAIN)
 		);
+
+		//Adding the new column before the current one. IE: Make, Model
 		$columns = array_slice( $columns, 0, 1, TRUE ) + $new + array_slice( $columns, 1, NULL, TRUE );
 		$columns['title'] = __( 'Model', self::DOMAIN);
+
 		return $columns;
 	}
 
@@ -193,13 +204,73 @@ class Controller {
 		$makes = Make::getAllMakes();
 		$GLOBALS['post'] = $post;
 
-		if ($column == 'make_id')
+		if ( $column == 'make_id' )
 		{
-			$make_id = get_post_meta( $post->ID, 'make_id', TRUE);
+			$make_id = get_post_meta( $post->ID, 'make_id', TRUE );
 			if ( array_key_exists( $make_id, $makes ) )
 			{
 				echo $makes[ $make_id ]->getTitle();
 			}
 		}
+	}
+
+	/**
+	 * Applies 4 filters to get the models page to sort by make and then model.
+	 *
+	 * Filters:
+	 *  posts_fields - filtered by post type
+	 *  posts_join - filtered by post type
+	 *  posts_orderby - filtered by post type
+	 *  manage_edit-{post_type}_sortable_columns
+	 */
+	public function setMakeColumnSortable( )
+	{
+		add_filter( 'manage_edit-' . Model::CUSTOM_POST_TYPE . '_sortable_columns', function($sortable_columns) {
+			$sortable_columns[ 'make_id' ] = 'make';
+
+			return $sortable_columns;
+		} );
+
+		add_filter( 'posts_fields', function( $fields, $query ) {
+			if( $query->query_vars['post_type'] == Model::CUSTOM_POST_TYPE )
+			{
+				$fields .= ", x.post_title as make_id";
+			}
+
+			return $fields;
+		}, 10, 2 );
+
+		add_filter( 'posts_join', function($join, $query ) {
+			if( $query->query_vars['post_type'] == Model::CUSTOM_POST_TYPE )
+			{
+				$join .= "
+					JOIN (
+						SELECT
+							id,
+							post_title,
+							post_id,
+							meta_value
+						FROM
+							wp_posts
+							JOIN wp_postmeta
+							ON wp_postmeta.meta_value = wp_posts.id
+						WHERE
+							wp_posts.post_type = 'squirrels_make'
+							AND wp_postmeta.meta_key = 'make_id'
+					) x
+					ON x.post_id = wp_posts.id";
+			}
+
+			return $join;
+		}, 10, 2 );
+
+		add_filter( 'posts_orderby', function( $orderby, $query ) {
+			if( $query->query_vars['post_type'] == Model::CUSTOM_POST_TYPE )
+			{
+				$orderby = 'x.post_title ' . $query->query_vars[ 'order' ] . ', wp_posts.post_title ' . $query->query_vars[ 'order' ];
+			}
+
+			return $orderby;
+		}, 10, 2 );
 	}
 }

@@ -48,6 +48,9 @@ if ( is_admin() )
 	/** Save Model meta */
 	add_action( 'save_post', array( $squirrel, 'saveModelMeta' ), 10, 2 );
 
+	/** Makes the Models page sort by make and then model */
+	$squirrel->setMakeColumnSortable();
+
 	/** Add Make column to Model list */
 	add_filter( 'manage_' . \SquirrelsInventory\Model::CUSTOM_POST_TYPE . '_posts_columns', array( $squirrel, 'addMakeColumnToModelList' ) );
 	add_action( 'manage_' . \SquirrelsInventory\Model::CUSTOM_POST_TYPE . '_posts_custom_column' , array( $squirrel, 'customModelColumns' ) );
