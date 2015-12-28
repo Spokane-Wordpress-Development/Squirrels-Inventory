@@ -66,9 +66,9 @@ class CustomPostType {
 	}
 
 	/**
-	 * @param mixed $id
+	 * @param $id
 	 *
-	 * @return AutoType
+	 * @return $this
 	 */
 	public function setId( $id )
 	{
@@ -89,9 +89,9 @@ class CustomPostType {
 	}
 
 	/**
-	 * @param mixed $title
+	 * @param $title
 	 *
-	 * @return AutoType
+	 * @return $this
 	 */
 	public function setTitle( $title )
 	{
