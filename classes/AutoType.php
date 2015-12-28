@@ -8,9 +8,60 @@ namespace SquirrelsInventory;
 
 class AutoType {
 
+	const CUSTOM_POST_TYPE = 'squirrels_type';
+
 	private $id;
 	private $title;
-	private $is_active = FALSE;
+
+	/**
+	 * AutoType constructor.
+	 *
+	 * @param null $id
+	 * @param null $title
+	 */
+	public function __construct( $id=NULL, $title=NULL )
+	{
+		$this
+			->setId( $id )
+			->setTitle( $title );
+	}
+
+	/**
+	 *
+	 */
+	public function create()
+	{
+		if ( strlen( $this->title ) > 0 )
+		{
+			$this->getIdFromTitle();
+			if ( $this->id === NULL )
+			{
+				$this->id = wp_insert_post( array(
+					'post_title' => $this->title,
+					'post_type' => self::CUSTOM_POST_TYPE,
+					'post_status' => 'publish'
+				), TRUE );
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function getIdFromTitle()
+	{
+		$query = new \WP_Query( array(
+			'post_type' => self::CUSTOM_POST_TYPE,
+			'post_status' => 'publish',
+			'title' => $this->title
+		) );
+
+		if ( $query->have_posts() )
+		{
+			$query->the_post();
+			$this->id = get_the_ID();
+		}
+	}
 
 	/**
 	 * @return mixed
@@ -56,22 +107,26 @@ class AutoType {
 	}
 
 	/**
-	 * @return boolean
+	 * @return array
 	 */
-	public function isActive()
+	public static function getAllAutoTypes()
 	{
-		return $this->is_active;
-	}
+		$auto_types = array();
 
-	/**
-	 * @param boolean $is_active
-	 *
-	 * @return AutoType
-	 */
-	public function setIsActive( $is_active )
-	{
-		$this->is_active = ($is_active === TRUE || $is_active == 1) ? TRUE : FALSE;
+		$query = new \WP_Query( array(
+			'post_type' => self::CUSTOM_POST_TYPE,
+			'post_status' => 'publish',
+			'posts_per_page' => -1,
+			'order_by' => 'post_title'
+		) );
 
-		return $this;
+		if( $query->have_posts() ) {
+			while ( $query->have_posts() ) : $query->the_post();
+				$auto_type = new AutoType( get_the_ID(), get_the_title() );
+				$auto_types[ get_the_ID() ] = $auto_type;
+			endwhile;
+		}
+
+		return $auto_types;
 	}
 }

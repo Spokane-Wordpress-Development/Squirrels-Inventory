@@ -6,6 +6,7 @@ class Controller {
 
 	public function activate()
 	{
+		/** Pre-load makes and models */
 		$makes = $this->getMakesModels();
 		foreach ( $makes as $make_data )
 		{
@@ -46,6 +47,16 @@ class Controller {
 				}
 			}
 		}
+
+		/** Pre-load Auto Types */
+		$auto_types = array( 'Car', 'Truck', 'SUV', 'Motorcycle', 'RV' );
+		foreach ($auto_types as $title)
+		{
+			$auto_type = new AutoType;
+			$auto_type
+				->setTitle( $title )
+				->create();
+		}
 	}
 
 	private function getMakesModels()
@@ -66,7 +77,8 @@ class Controller {
 	{
 		$this
 			->createPostType('Make')
-			->createPostType('Model');
+			->createPostType('Model')
+			->createPostType('Type');
 	}
 
 	/**
@@ -110,6 +122,8 @@ class Controller {
 		add_submenu_page('squirrels_inventory', __( 'Inventory', 'squirrels_inventory' ), __( 'Inventory', 'squirrels_inventory' ), 'manage_options', 'squirrels_inventory');
 		add_submenu_page('squirrels_inventory', __( 'Makes', 'squirrels_inventory' ), __( 'Makes', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_make&order=asc');
 		add_submenu_page('squirrels_inventory', __( 'Models', 'squirrels_inventory' ), __( 'Models', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_model&order=asc');
+		add_submenu_page('squirrels_inventory', __( 'Types', 'squirrels_inventory' ), __( 'Types', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_type&order=asc');
+
 	}
 
 	/**
