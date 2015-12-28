@@ -49,7 +49,7 @@ class Controller {
 		}
 
 		/** Pre-load Auto Types */
-		$auto_types = array( 'Car', 'Truck', 'SUV', 'Motorcycle', 'RV' );
+		$auto_types = array( 'Car', 'Truck', 'SUV', 'Motorcycle', 'RV', 'Boat' );
 		foreach ($auto_types as $title)
 		{
 			$auto_type = new AutoType;
@@ -105,7 +105,7 @@ class Controller {
 			'description' => $title . 's',
 			'supports' => array( 'title' ),
 			'show_ui' => TRUE,
-			'show_in_menu' => FALSE,
+			'show_in_menu' => 'squirrels_inventory',
 			'show_in_nav_menus' => TRUE,
 			'publicly_queryable' => TRUE,
 			'exclude_from_search' => FALSE,
@@ -120,9 +120,9 @@ class Controller {
 	{
 		add_menu_page('Squirrels Inventory', 'Squirrels', 'manage_options', 'squirrels_inventory', array( $this, 'pluginSettingsPage' ), 'dashicons-list-view');
 		add_submenu_page('squirrels_inventory', __( 'Inventory', 'squirrels_inventory' ), __( 'Inventory', 'squirrels_inventory' ), 'manage_options', 'squirrels_inventory');
-		add_submenu_page('squirrels_inventory', __( 'Makes', 'squirrels_inventory' ), __( 'Makes', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_make&order=asc');
-		add_submenu_page('squirrels_inventory', __( 'Models', 'squirrels_inventory' ), __( 'Models', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_model&order=asc');
-		add_submenu_page('squirrels_inventory', __( 'Types', 'squirrels_inventory' ), __( 'Types', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_type&order=asc');
+		//add_submenu_page('squirrels_inventory', __( 'Makes', 'squirrels_inventory' ), __( 'Makes', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_make&order=asc');
+		//add_submenu_page('squirrels_inventory', __( 'Models', 'squirrels_inventory' ), __( 'Models', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_model&order=asc');
+		//add_submenu_page('squirrels_inventory', __( 'Types', 'squirrels_inventory' ), __( 'Types', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_type&order=asc');
 
 	}
 
@@ -185,6 +185,9 @@ class Controller {
 				break;
 			case Model::CUSTOM_POST_TYPE:
 				$title = 'Ex: Mustang';
+				break;
+			case AutoType::CUSTOM_POST_TYPE:
+				$title = 'Ex: Car';
 				break;
 		}
 
