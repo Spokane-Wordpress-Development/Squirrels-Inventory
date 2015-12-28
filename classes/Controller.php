@@ -241,22 +241,26 @@ class Controller {
 		}, 10, 2 );
 
 		add_filter( 'posts_join', function($join, $query ) {
+
+			global $wpdb;
+
 			if( $query->query_vars['post_type'] == Model::CUSTOM_POST_TYPE )
 			{
 				$join .= "
 					JOIN (
 						SELECT
-							id,
-							post_title,
-							post_id,
-							meta_value
+							p.id,
+							p.post_title,
+							pm.post_id,
+							pm.meta_value
 						FROM
-							wp_posts
-							JOIN wp_postmeta
-							ON wp_postmeta.meta_value = wp_posts.id
+							" . $wpdb->prefix . "posts p
+						JOIN
+							" . $wpdb->prefix . "postmeta pm
+							ON pm.meta_value = p.id
 						WHERE
-							wp_posts.post_type = 'squirrels_make'
-							AND wp_postmeta.meta_key = 'make_id'
+							p.post_type = '" . Make::CUSTOM_POST_TYPE . "'
+							AND pm.meta_key = 'make_id'
 					) x
 					ON x.post_id = wp_posts.id";
 			}
