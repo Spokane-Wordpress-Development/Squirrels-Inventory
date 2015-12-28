@@ -4,8 +4,6 @@ namespace SquirrelsInventory;
 
 class Controller {
 
-	const DOMAIN = 'squirrels_inventory';
-
 	public function activate()
 	{
 		$makes = $this->getMakesModels();
@@ -79,14 +77,14 @@ class Controller {
 	private function createPostType( $title )
 	{
 		$labels = array (
-			'name' => __( $title . 's', self::DOMAIN ),
-			'singular_name' => __( $title, self::DOMAIN ),
-			'add_new_item' => __( 'Add New ' . $title, self::DOMAIN ),
-			'edit_item' => __( 'Edit ' . $title, self::DOMAIN ),
-			'new_item' => __( 'New ' . $title, self::DOMAIN ),
-			'view_item' => __( 'View ' . $title, self::DOMAIN ),
-			'search_items' => __( 'Search ' . $title . 's', self::DOMAIN ),
-			'not_found' => __( 'No ' . strtolower( $title ) . 's found.', self::DOMAIN )
+			'name' => __( $title . 's', 'squirrels_inventory' ),
+			'singular_name' => __( $title, 'squirrels_inventory' ),
+			'add_new_item' => __( 'Add New ' . $title, 'squirrels_inventory' ),
+			'edit_item' => __( 'Edit ' . $title, 'squirrels_inventory' ),
+			'new_item' => __( 'New ' . $title, 'squirrels_inventory' ),
+			'view_item' => __( 'View ' . $title, 'squirrels_inventory' ),
+			'search_items' => __( 'Search ' . $title . 's', 'squirrels_inventory' ),
+			'not_found' => __( 'No ' . strtolower( $title ) . 's found.', 'squirrels_inventory' )
 		);
 
 		$args = array (
@@ -109,9 +107,9 @@ class Controller {
 	public function addMenus()
 	{
 		add_menu_page('Squirrels Inventory', 'Squirrels', 'manage_options', 'squirrels_inventory', array( $this, 'pluginSettingsPage' ), 'dashicons-list-view');
-		add_submenu_page('squirrels_inventory', __( 'Inventory', self::DOMAIN ), __( 'Inventory', self::DOMAIN ), 'manage_options', 'squirrels_inventory');
-		add_submenu_page('squirrels_inventory', __( 'Makes', self::DOMAIN ), __( 'Makes', self::DOMAIN ), 'manage_options', 'edit.php?post_type=squirrels_make&order=asc');
-		add_submenu_page('squirrels_inventory', __( 'Models', self::DOMAIN ), __( 'Models', self::DOMAIN ), 'manage_options', 'edit.php?post_type=squirrels_model&order=asc');
+		add_submenu_page('squirrels_inventory', __( 'Inventory', 'squirrels_inventory' ), __( 'Inventory', 'squirrels_inventory' ), 'manage_options', 'squirrels_inventory');
+		add_submenu_page('squirrels_inventory', __( 'Makes', 'squirrels_inventory' ), __( 'Makes', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_make&order=asc');
+		add_submenu_page('squirrels_inventory', __( 'Models', 'squirrels_inventory' ), __( 'Models', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_model&order=asc');
 	}
 
 	/**
@@ -124,7 +122,7 @@ class Controller {
 
 	public function customModelMeta()
 	{
-		add_meta_box( 'squirrels-model-meta', __( 'Additional Info', self::DOMAIN ), array( $this, 'modelMeta' ), 'squirrels_model' );
+		add_meta_box( 'squirrels-model-meta', __( 'Additional Info', 'squirrels_inventory' ), array( $this, 'modelMeta' ), 'squirrels_model' );
 	}
 
 	public function modelMeta()
@@ -182,12 +180,12 @@ class Controller {
 	public function addMakeColumnToModelList( $columns )
 	{
 		$new = array(
-			'make_id' => __( 'Make', self::DOMAIN)
+			'make_id' => __( 'Make', 'squirrels_inventory')
 		);
 
 		//Adding the new column before the current one. IE: Make, Model
 		$columns = array_slice( $columns, 0, 1, TRUE ) + $new + array_slice( $columns, 1, NULL, TRUE );
-		$columns['title'] = __( 'Model', self::DOMAIN);
+		$columns['title'] = __( 'Model', 'squirrels_inventory');
 
 		return $columns;
 	}
