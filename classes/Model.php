@@ -6,30 +6,18 @@
 
 namespace SquirrelsInventory;
 
-class Model {
+class Model extends CustomPostType {
 
 	const CUSTOM_POST_TYPE = 'squirrels_model';
 
 	/** @var Make $make */
 	private $make;
 
-	private $id;
 	private $make_id;
-	private $title;
 
 	/**
-	 * Model constructor.
 	 *
-	 * @param null $id
-	 * @param null $title
 	 */
-	public function __construct( $id=NULL, $title=NULL )
-	{
-		$this
-			->setId( $id )
-			->setTitle( $title );
-	}
-
 	public function create()
 	{
 		if ( strlen( $this->title ) > 0 && strlen( $this->make_id ) > 0 )
@@ -48,6 +36,9 @@ class Model {
 		}
 	}
 
+	/**
+	 *
+	 */
 	public function getIdFromTitleAndMakeId()
 	{
 		$query = new \WP_Query( array(
@@ -92,29 +83,6 @@ class Model {
 	/**
 	 * @return mixed
 	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
-	 * @param $id
-	 *
-	 * @return $this
-	 */
-	public function setId( $id )
-	{
-		if (is_numeric($id))
-		{
-			$this->id = abs(round($id));
-		}
-
-		return $this;
-	}
-
-	/**
-	 * @return mixed
-	 */
 	public function getMakeId()
 	{
 		return $this->make_id;
@@ -131,26 +99,6 @@ class Model {
 		{
 			$this->make_id = abs(round($make_id));
 		}
-
-		return $this;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getTitle()
-	{
-		return $this->title;
-	}
-
-	/**
-	 * @param $title
-	 *
-	 * @return $this
-	 */
-	public function setTitle( $title )
-	{
-		$this->title = $title;
 
 		return $this;
 	}

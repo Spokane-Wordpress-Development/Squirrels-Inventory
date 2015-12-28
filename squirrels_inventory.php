@@ -13,6 +13,7 @@
  */
 
 require_once ( 'classes/Controller.php' );
+require_once ( 'classes/CustomPostType.php' );
 require_once ( 'classes/Auto.php' );
 require_once ( 'classes/AutoFeature.php' );
 require_once ( 'classes/AutoType.php' );
