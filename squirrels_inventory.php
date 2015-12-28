@@ -24,7 +24,7 @@ require_once ( 'classes/Model.php' );
 /** controller object */
 $squirrel = new \SquirrelsInventory\Controller;
 
-/** Activitate */
+/** Activate */
 register_activation_hook( __FILE__, array( $squirrel, 'activate') );
 
 /** Initialize any variables that the plugin needs */
