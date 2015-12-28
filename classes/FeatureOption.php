@@ -2,6 +2,9 @@
 
 /**
  * ex: Manual, Automatic
+ *
+ * Extracted from a json string in the \SquirrelsInventory\Feature table
+ * [{"title":"Automatic","position":"1","is_default":"1"},{"title":"Manual","position":"2","is_default":"0"}]
  */
 
 namespace SquirrelsInventory;

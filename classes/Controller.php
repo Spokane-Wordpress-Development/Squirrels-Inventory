@@ -4,8 +4,43 @@ namespace SquirrelsInventory;
 
 class Controller {
 
+	const VERSION = '1.0';
+
 	public function activate()
 	{
+		add_option( 'squirrels_inventory_version', self::VERSION );
+
+		require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
+		global $wpdb;
+
+		/** Create tables */
+		$charset_collate = '';
+		if ( ! empty( $wpdb->charset ) ) {
+			$charset_collate .= "DEFAULT CHARACTER SET $wpdb->charset";
+		}
+		if ( ! empty( $wpdb->collate ) ) {
+			$charset_collate .= " COLLATE $wpdb->collate";
+		}
+
+		/** SQUIRRELS_FEATURES table */
+		$table = $wpdb->prefix . "squirrels_features";
+		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+			$sql = "
+			CREATE TABLE `" . $table . "`
+			(
+				`id` INT(11) NOT NULL AUTO_INCREMENT,
+				`title` VARCHAR(50) DEFAULT NULL,
+				`is_system` TINYINT(4) DEFAULT NULL,
+				`is_true_false` TINYINT(4) DEFAULT NULL,
+				`options` TEXT DEFAULT NULL,
+				`created_at` DATETIME DEFAULT NULL,
+				`updated_at` DATETIME DEFAULT NULL,
+				PRIMARY KEY (`id`)
+			)";
+			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+			dbDelta( $sql );
+		}
+
 		/** Pre-load makes and models */
 		$makes = $this->getMakesModels();
 		foreach ( $makes as $make_data )
