@@ -11,7 +11,7 @@ $makes = \SquirrelsInventory\Make::getAllMakes();
 	<tr>
 		<th>
 			<label for="squirrels-model-make-id">
-				<?php echo __( 'Choose a Make', \SquirrelsInventory\Controller::DOMAIN ); ?>:
+				<?php echo __( 'Choose a Make', 'squirrels_inventory' ); ?>:
 			</label>
 		</th>
 		<td>
@@ -30,7 +30,7 @@ $makes = \SquirrelsInventory\Make::getAllMakes();
 	<tr>
 		<th>
 			<label for="squirrels-model-new-make">
-				<?php echo __( 'Or add a new Make', \SquirrelsInventory\Controller::DOMAIN ); ?>:
+				<?php echo __( 'Or add a new Make', 'squirrels_inventory' ); ?>:
 			</label>
 		</th>
 		<td>
