@@ -74,7 +74,7 @@ class CustomPostType {
 	{
 		if (is_numeric($id))
 		{
-			$this->id = abs(round($id));
+			$this->id = intval(abs(round($id)));
 		}
 
 		return $this;

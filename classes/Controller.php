@@ -96,19 +96,16 @@ class Controller {
 	public function addMenus()
 	{
 		add_menu_page('Squirrels Inventory', 'Squirrels', 'manage_options', 'squirrels_inventory', array( $this, 'pluginSettingsPage' ), 'dashicons-list-view');
-		add_submenu_page('squirrels_inventory', __( 'Inventory', 'squirrels_inventory' ), __( 'Inventory', 'squirrels_inventory' ), 'manage_options', 'squirrels_inventory');
+		add_submenu_page('squirrels_inventory', __( 'Settings', 'squirrels_inventory' ), __( 'Settings', 'squirrels_inventory' ), 'manage_options', 'squirrels_inventory');
 		//add_submenu_page('squirrels_inventory', __( 'Makes', 'squirrels_inventory' ), __( 'Makes', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_make&order=asc');
 		//add_submenu_page('squirrels_inventory', __( 'Models', 'squirrels_inventory' ), __( 'Models', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_model&order=asc');
 		//add_submenu_page('squirrels_inventory', __( 'Types', 'squirrels_inventory' ), __( 'Types', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_type&order=asc');
 
 	}
 
-	/**
-	 * TODO: This
-	 */
 	public function pluginSettingsPage()
 	{
-		echo '<h1>Squirrels Inventory Settings</h1>';
+		include( dirname( __DIR__ ) . '/includes/settings.inc');
 	}
 
 	public function customModelMeta()
