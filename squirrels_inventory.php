@@ -21,6 +21,7 @@ require_once ( 'classes/Feature.php' );
 require_once ( 'classes/FeatureOption.php' );
 require_once ( 'classes/Make.php' );
 require_once ( 'classes/Model.php' );
+require_once ( 'classes/FeatureTable.php' );
 
 /** controller object */
 $squirrel = new \SquirrelsInventory\Controller;

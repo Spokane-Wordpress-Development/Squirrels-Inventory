@@ -132,10 +132,16 @@ class Controller {
 	{
 		add_menu_page('Squirrels Inventory', 'Squirrels', 'manage_options', 'squirrels_inventory', array( $this, 'pluginSettingsPage' ), 'dashicons-list-view');
 		add_submenu_page('squirrels_inventory', __( 'Settings', 'squirrels_inventory' ), __( 'Settings', 'squirrels_inventory' ), 'manage_options', 'squirrels_inventory');
+		add_submenu_page('squirrels_inventory', 'Features', 'Features', 'manage_options', 'squirrels_features', array($this, 'showFeaturesPage'));
 		//add_submenu_page('squirrels_inventory', __( 'Makes', 'squirrels_inventory' ), __( 'Makes', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_make&order=asc');
 		//add_submenu_page('squirrels_inventory', __( 'Models', 'squirrels_inventory' ), __( 'Models', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_model&order=asc');
 		//add_submenu_page('squirrels_inventory', __( 'Types', 'squirrels_inventory' ), __( 'Types', 'squirrels_inventory' ), 'manage_options', 'edit.php?post_type=squirrels_type&order=asc');
 
+	}
+
+	public function showFeaturesPage()
+	{
+		include( dirname( __DIR__ ) . '/includes/features.inc');
 	}
 
 	public function pluginSettingsPage()
