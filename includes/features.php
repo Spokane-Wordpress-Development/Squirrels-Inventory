@@ -87,7 +87,7 @@ if ( isset( $_GET[ 'action' ] ) )
 	<?php } else { ?>
 
 		<h1>
-			<?php echo __( 'Fetures', 'squirrels_inventory' ); ?>
+			<?php echo __( 'Features', 'squirrels_inventory' ); ?>
 			<a href="?page=<?php echo $_REQUEST['page']; ?>&action=add" class="page-title-action">
 				<?php echo __( 'Add', 'squirrels_inventory' ); ?>
 				<?php echo __( 'New', 'squirrels_inventory' ); ?>
