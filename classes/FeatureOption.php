@@ -19,6 +19,21 @@ class FeatureOption {
 	private $is_default = FALSE;
 
 	/**
+	 * FeatureOption constructor.
+	 *
+	 * @param null $title
+	 * @param null $position
+	 * @param bool $is_default
+	 */
+	public function __construct( $title=NULL, $position=NULL, $is_default=FALSE )
+	{
+		$this
+			->setTitle( $title )
+			->setPosition( $position )
+			->setIsDefault( $is_default );
+	}
+
+	/**
 	 * @return Feature
 	 */
 	public function getFeature()
@@ -59,10 +74,16 @@ class FeatureOption {
 	}
 
 	/**
-	 * @return boolean
+	 * @param bool $as_tiny_int
+	 *
+	 * @return bool|int
 	 */
-	public function isDefault()
+	public function isDefault( $as_tiny_int = FALSE )
 	{
+		if ( $as_tiny_int )
+		{
+			return ($this->is_default) ? 1 : 0;
+		}
 		return $this->is_default;
 	}
 
@@ -93,7 +114,7 @@ class FeatureOption {
 	 */
 	public function setPosition( $position )
 	{
-		$this->position = (is_numeric($position)) ? abs(round($position)) : 0;
+		$this->position = (is_numeric($position)) ? abs(round($position)) : NULL;
 
 		return $this;
 	}

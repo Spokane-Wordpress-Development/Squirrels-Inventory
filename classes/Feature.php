@@ -15,8 +15,255 @@ class Feature {
 	private $created_at;
 	private $updated_at;
 
-	/** FeatureOption[] $options */
+	/** @var FeatureOption[] $options */
 	private $options;
+
+	/**
+	 * Feature constructor.
+	 *
+	 * @param null $id
+	 */
+	public function __construct( $id=NULL )
+	{
+		$this
+			->setId( $id )
+			->read();
+	}
+
+	/**
+	 *
+	 */
+	public function read()
+	{
+		if ( $this->id !== NULL )
+		{
+			global $wpdb;
+
+			$sql = $wpdb->prepare("
+				SELECT
+					*
+				FROM
+					`" . $wpdb->prefix . "squirrels_features`
+				WHERE
+					`id` = %d",
+				$this->id
+			);
+
+			if ( $row = $wpdb->get_row( $sql ) )
+			{
+				$this->loadFromRow( $row );
+			}
+		}
+	}
+
+	/**
+	 * @param \stdClass $row
+	 */
+	public function loadFromRow( \stdClass $row )
+	{
+		$this
+			->setId( $row->id )
+			->setTitle( $row->title )
+			->setIsSystem( $row->is_system )
+			->setIsTrueFalse( $row->is_true_false )
+			->setCreatedAt( $row->created_at )
+			->setUpdatedAt( $row->updated_at );
+
+		if ( strlen( $row->options ) > 0 )
+		{
+			$options = json_decode( $row->options, TRUE );
+			foreach ( $options as $opt)
+			{
+				$option = new FeatureOption;
+				$option
+					->setTitle( $opt['title'] )
+					->setPosition( $opt['position'] )
+					->setIsDefault( $opt['is_default'] );
+				$this->addOption( $option );
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function create()
+	{
+		global $wpdb;
+
+		if ( strlen($this->title) > 0 )
+		{
+			$this
+				->setCreatedAt( time() )
+				->setUpdatedAt( time() )
+				->removeEmptyOptions()
+				->sortOptionsByPosition();
+
+			$options = $this->convertOptionsToArray();
+
+			$wpdb->insert(
+				$wpdb->prefix . 'squirrels_features',
+				array(
+					'title' => $this->title,
+					'is_system' => $this->isSystem( TRUE ),
+					'is_true_false' => $this->isTrueFalse( TRUE ),
+					'options' => ( $this->isTrueFalse() || count( $options ) == 0) ? '' : json_encode( $options ),
+					'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
+					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
+				),
+				array(
+					'%s',
+					'%d',
+					'%d',
+					'%s',
+					'%s',
+					'%s'
+				)
+			);
+
+			$this->id = $wpdb->insert_id;
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function update()
+	{
+		global $wpdb;
+
+		if ( $this->id !== NULL )
+		{
+			$this
+				->setUpdatedAt( time() )
+				->removeEmptyOptions()
+				->sortOptionsByPosition();
+
+			$options = $this->convertOptionsToArray();
+
+			$wpdb->update(
+				$wpdb->prefix . 'squirrels_features',
+				array(
+					'title' => $this->title,
+					'is_system' => $this->isSystem( TRUE ),
+					'is_true_false' => $this->isTrueFalse( TRUE ),
+					'options' => ( $this->isTrueFalse() || count( $options ) == 0) ? '' : json_encode( $options ),
+					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
+				),
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%s',
+					'%d',
+					'%d',
+					'%s',
+					'%s'
+				),
+				array(
+					'%d'
+				)
+			);
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function delete()
+	{
+		global $wpdb;
+
+		if ( $this->id !== NULL )
+		{
+			$wpdb->delete(
+				$wpdb->prefix . 'squirrels_features',
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%d'
+				)
+			);
+
+			$this->id = NULL;
+		}
+	}
+
+	/**
+	 * @return array
+	 */
+	private function convertOptionsToArray()
+	{
+		$options = array();
+		foreach ( $this->options as $option )
+		{
+			$options[] = array(
+				'title' => $option->getTitle(),
+				'position' => $option->getPosition(),
+				'is_default' => $option->isDefault( TRUE )
+			);
+		}
+
+		return $options;
+	}
+
+	/**
+	 * @return $this
+	 */
+	private function removeEmptyOptions()
+	{
+		foreach ( $this->options as $index => $option )
+		{
+			if ( strlen( $option->getTitle() ) == 0 )
+			{
+				unset ( $this->options[ $index ] );
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * @return $this
+	 */
+	private function sortOptionsByPosition()
+	{
+		/* TODO: find a better way to do this */
+
+		$positions = array();
+		$options = $this->options;
+		$this->options = array();
+
+		foreach ( $options as $option )
+		{
+			$positions[] = $option->getPosition();
+		}
+		asort ( $positions );
+
+		$count = 0;
+		foreach ($positions as $position )
+		{
+			foreach ( $options as $index => $option )
+			{
+				if ( $position == $option->getPosition() )
+				{
+					$option->setPosition( ++$count );
+					$this->options[] = $option;
+					unset ( $options[ $index ] );
+					break;
+				}
+			}
+		}
+
+		/* catch any left-overs */
+		foreach ( $options as $option )
+		{
+			$option->setPosition( ++$count );
+			$this->options[] = $option;
+		}
+
+		return $this;
+	}
 
 	/**
 	 * @return mixed
@@ -55,9 +302,16 @@ class Feature {
 	}
 
 	/**
-	 * @return boolean
+	 * @param bool $as_tiny_int
+	 *
+	 * @return bool|int
 	 */
-	public function isSystem() {
+	public function isSystem( $as_tiny_int = FALSE )
+	{
+		if ( $as_tiny_int )
+		{
+			return ($this->is_system) ? 1 : 0;
+		}
 		return $this->is_system;
 	}
 
@@ -73,9 +327,16 @@ class Feature {
 	}
 
 	/**
-	 * @return boolean
+	 * @param bool $as_tiny_int
+	 *
+	 * @return bool|int
 	 */
-	public function isTrueFalse() {
+	public function isTrueFalse( $as_tiny_int = FALSE )
+	{
+		if ( $as_tiny_int )
+		{
+			return ($this->is_true_false) ? 1 : 0;
+		}
 		return $this->is_true_false;
 	}
 
@@ -179,29 +440,8 @@ class Feature {
 		foreach ( $rows as $row )
 		{
 			$feature = new Feature;
-			$feature
-				->setId( $row->id )
-				->setTitle( $row->title )
-				->setIsSystem( $row->is_system )
-				->setIsTrueFalse( $row->is_true_false )
-				->setCreatedAt( $row->created_at )
-				->setUpdatedAt( $row->updated_at );
-
-			if ( strlen( $row->options ) > 0 )
-			{
-				$options = json_decode( $row->options, TRUE );
-				foreach ( $options as $opt)
-				{
-					$option = new FeatureOption;
-					$option
-						->setTitle( $opt['title'] )
-						->setPosition( $opt['position'] )
-						->setIsDefault( $opt['is_default'] );
-					$feature->addOption( $option );
-				}
-			}
-
-			$features[] = $feature;
+			$feature->loadFromRow( $row );
+			$features[ $feature->getId() ] = $feature;
 		}
 
 		return $features;
