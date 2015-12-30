@@ -85,7 +85,7 @@ class Controller {
 
 	private function getMakesModels()
 	{
-		$json = file_get_contents( dirname( __DIR__ ) . '/includes/makes_models.inc' );
+		$json = file_get_contents( dirname( __DIR__ ) . '/includes/makes_models.json' );
 		return json_decode( $json, TRUE );
 	}
 
@@ -153,12 +153,12 @@ class Controller {
 
 	public function showFeaturesPage()
 	{
-		include( dirname( __DIR__ ) . '/includes/features.inc');
+		include( dirname( __DIR__ ) . '/includes/features.php');
 	}
 
 	public function pluginSettingsPage()
 	{
-		include( dirname( __DIR__ ) . '/includes/settings.inc');
+		include( dirname( __DIR__ ) . '/includes/settings.php');
 	}
 
 	public function customModelMeta()
@@ -168,7 +168,7 @@ class Controller {
 
 	public function modelMeta()
 	{
-		include( dirname( __DIR__ ) ) . '/includes/model_meta.inc';
+		include( dirname( __DIR__ ) ) . '/includes/model_meta.php';
 	}
 
 	public function saveModelMeta( $post_id, $post )
