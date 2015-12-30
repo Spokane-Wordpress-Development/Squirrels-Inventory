@@ -411,6 +411,8 @@ class Feature {
 
 	/**
 	 * @param FeatureOption $option
+	 *
+	 * @return $this
 	 */
 	public function addOption( FeatureOption $option )
 	{
@@ -420,6 +422,8 @@ class Feature {
 		}
 
 		$this->options[] = $option;
+
+		return $this;
 	}
 
 	/**
@@ -445,5 +449,34 @@ class Feature {
 		}
 
 		return $features;
+	}
+
+	/**
+	 * @param $title
+	 *
+	 * @return bool|Feature
+	 */
+	public static function getFeatureByTitle( $title )
+	{
+		global $wpdb;
+
+		$sql = $wpdb->prepare("
+				SELECT
+					*
+				FROM
+					`" . $wpdb->prefix . "squirrels_features`
+				WHERE
+					`title` LIKE %s",
+			$title
+		);
+
+		if ( $row = $wpdb->get_row( $sql ) )
+		{
+			$feature = new Feature;
+			$feature->loadFromRow( $row );
+			return $feature;
+		}
+
+		return FALSE;
 	}
 }

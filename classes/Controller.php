@@ -69,6 +69,18 @@ class Controller {
 				->setTitle( $title )
 				->create();
 		}
+
+		/** Add a sample Feature */
+		if ( Feature::getFeatureByTitle( 'Transmission' ) === FALSE )
+		{
+			$feature = new Feature;
+			$feature
+				->setTitle( 'Transmission' )
+				->setIsTrueFalse( FALSE )
+				->addOption( new FeatureOption( 'Automatic', 1, TRUE ) )
+				->addOption( new FeatureOption( 'Manual', 2, FALSE ) )
+				->create();
+		}
 	}
 
 	private function getMakesModels()
