@@ -101,7 +101,7 @@ class FeatureTable extends \WP_List_Table {
 	{
 		if ( $item->is_true_false == 1 )
 		{
-			$return = __( 'True', 'squirrels_inventory' ) . ' / ' . __( 'False', 'squirrels_inventory' );
+			$return = __( 'Yes', 'squirrels_inventory' ) . ' / ' . __( 'No', 'squirrels_inventory' );
 		}
 		else
 		{
