@@ -41,6 +41,9 @@ if ( is_admin() )
 	/** Add main menu and sub-menus */
 	add_action( 'admin_menu', array( $squirrel, 'addMenus') );
 
+	/** Enqueue admin scripts */
+	add_action( 'admin_enqueue_scripts', array( $squirrel, 'enqueueAdminScripts' ) );
+
 	/** Change default placeholders */
 	add_filter( 'enter_title_here', array( $squirrel, 'changeDefaultPlaceholders' ) );
 

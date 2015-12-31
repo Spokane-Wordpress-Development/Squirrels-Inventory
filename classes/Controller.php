@@ -70,7 +70,7 @@ class Controller {
 				->create();
 		}
 
-		/** Add a sample Feature */
+		/** Add a couple sample Features */
 		if ( Feature::getFeatureByTitle( 'Transmission' ) === FALSE )
 		{
 			$feature = new Feature;
@@ -79,6 +79,12 @@ class Controller {
 				->setIsTrueFalse( FALSE )
 				->addOption( new FeatureOption( 'Automatic', 1, TRUE ) )
 				->addOption( new FeatureOption( 'Manual', 2, FALSE ) )
+				->create();
+
+			$feature = new Feature;
+			$feature
+				->setTitle( 'AWD' )
+				->setIsTrueFalse( TRUE )
 				->create();
 		}
 	}
@@ -314,5 +320,13 @@ class Controller {
 
 			return $orderby;
 		}, 10, 2 );
+	}
+
+	/**
+	 *
+	 */
+	public function enqueueAdminScripts()
+	{
+		wp_enqueue_script( 'squirrels-admin-features', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin_features.js', array( 'jquery' ), time(), TRUE );
 	}
 }
