@@ -135,7 +135,7 @@ class Controller {
 			'description' => $title . 's',
 			'supports' => array( 'title' ),
 			'show_ui' => TRUE,
-			'show_in_menu' => 'squirrels_inventory',
+			'show_in_menu' => 'squirrels',
 			'show_in_nav_menus' => TRUE,
 			'publicly_queryable' => TRUE,
 			'exclude_from_search' => FALSE,
@@ -148,14 +148,20 @@ class Controller {
 
 	public function addMenus()
 	{
-		add_menu_page('Squirrels Inventory', 'Squirrels', 'manage_options', 'squirrels_inventory', array( $this, 'pluginSettingsPage' ), 'dashicons-list-view');
-		add_submenu_page('squirrels_inventory', __( 'Settings', 'squirrels_inventory' ), __( 'Settings', 'squirrels_inventory' ), 'manage_options', 'squirrels_inventory');
-		add_submenu_page('squirrels_inventory', 'Features', 'Features', 'manage_options', 'squirrels_features', array($this, 'showFeaturesPage'));
+		add_menu_page('Squirrels Inventory', 'Squirrels', 'manage_options', 'squirrels', array( $this, 'pluginSettingsPage' ), 'dashicons-list-view');
+		add_submenu_page('squirrels', __( 'Settings', 'squirrels_inventory' ), __( 'Settings', 'squirrels_inventory' ), 'manage_options', 'squirrels');
+		add_submenu_page('squirrels', __( 'Features', 'squirrels_inventory' ), __( 'Features', 'squirrels_inventory' ), 'manage_options', 'squirrels_features', array($this, 'showFeaturesPage'));
+		add_submenu_page('squirrels', __( 'Inventory', 'squirrels_inventory' ), __( 'Inventory', 'squirrels_inventory' ), 'manage_options', 'squirrels_inventory', array($this, 'showInventoryPage'));
 	}
 
 	public function showFeaturesPage()
 	{
 		include( dirname( __DIR__ ) . '/includes/features.php');
+	}
+
+	public function showInventoryPage()
+	{
+		include( dirname( __DIR__ ) . '/includes/inventory.php');
 	}
 
 	public function pluginSettingsPage()
