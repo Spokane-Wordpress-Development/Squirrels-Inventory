@@ -59,5 +59,29 @@ if ( is_admin() )
 	/** Add Make column to Model list */
 	add_filter( 'manage_' . \SquirrelsInventory\Model::CUSTOM_POST_TYPE . '_posts_columns', array( $squirrel, 'addMakeColumnToModelList' ) );
 	add_action( 'manage_' . \SquirrelsInventory\Model::CUSTOM_POST_TYPE . '_posts_custom_column' , array( $squirrel, 'customModelColumns' ) );
-}
 
+	add_action( 'wp_ajax_squirrels_feature_save', function() use ($squirrel) {
+
+		if( $_REQUEST['id'] != 0 )
+		{
+			$response['success'] = $squirrel->editFeature();
+		}
+		else
+		{
+			$response['success'] = $squirrel->createFeature();
+		}
+
+		header( 'Content-Type: application/json' );
+		echo json_encode( $response );
+		exit;
+
+	} );
+
+	add_action( 'wp_ajax_squirrels_feature_delete', function() use ($squirrel) {
+
+		header( 'Content-Type: application/json' );
+		echo json_encode( array('success' => $squirrel->deleteFeature() ) );
+		exit;
+
+	} );
+}

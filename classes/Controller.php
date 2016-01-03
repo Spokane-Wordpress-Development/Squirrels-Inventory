@@ -334,5 +334,78 @@ class Controller {
 	public function enqueueAdminScripts()
 	{
 		wp_enqueue_script( 'squirrels-admin-features', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin_features.js', array( 'jquery' ), time(), TRUE );
+		wp_localize_script( 'squirrels-admin-features', 'url_variables', $_GET );
+	}
+
+	/**
+	 * AJAX action for adding a new feature.
+	 */
+	public function createFeature()
+	{
+		$feature = new Feature();
+
+		$feature
+			->setTitle( stripslashes( $_REQUEST['title'] ) );
+
+		if($_REQUEST['option'] == 0)
+		{
+			$feature->setIsTrueFalse( TRUE );
+		}
+		else
+		{
+			$feature->setIsTrueFalse( FALSE );
+
+			foreach( $_REQUEST['custom_options'] as $index => $option )
+			{
+				$feature->addOption( new FeatureOption( stripslashes( $option['value'] ), $index+1, filter_var( $option['is_default'], FILTER_VALIDATE_BOOLEAN ) ) );
+			}
+		}
+
+		$feature->create();
+
+		return $feature->getId();
+	}
+
+	/**
+	 * AJAX action for editing a feature.
+	 */
+	public function editFeature()
+	{
+		$feature = new Feature($_REQUEST['id']);
+
+		$feature
+			->setTitle( stripslashes( $_REQUEST['title'] ) );
+
+		if($_REQUEST['option'] == 0)
+		{
+			$feature->setIsTrueFalse( TRUE );
+		}
+		else
+		{
+			$feature->setOptions( array() );
+
+			$feature->setIsTrueFalse( FALSE );
+
+			foreach( $_REQUEST['custom_options'] as $index => $option )
+			{
+				$feature->addOption( new FeatureOption( stripslashes( $option['value'] ), $index+1, filter_var( $option['is_default'], FILTER_VALIDATE_BOOLEAN ) ) );
+			}
+		}
+
+		$feature->update();
+
+		return $feature->getId();
+	}
+
+	/**
+	 * AJAX action for deleting feature.
+	 */
+	public function deleteFeature()
+	{
+		$feature = new Feature( $_REQUEST['id'] );
+		$feature->delete();
+
+		//Since delete doesn't return anything, this will check for success
+		return $feature->getId() == NULL;
 	}
 }

@@ -20,16 +20,35 @@ if ( isset( $_GET[ 'action' ] ) )
 
 ?>
 
+<style>
+	.squirrels-feature-custom-option-remove{
+		cursor: pointer;
+		color: red;
+	}
+
+	.squirrels-feature-custom-option-add{
+		cursor: pointer;
+		color: green;
+	}
+
+	.squirrels-feature-custom-option-remove,
+	.squirrels-feature-custom-option-add{
+		margin-top: 5px;
+		margin-left: 5px;
+	}
+</style>
+
 <div class="wrap">
 
 	<?php if ( $action == 'add' ) { ?>
 
 		<h1>
-			<?php echo __( 'Add', 'squirrels_inventory' ); ?>
-			<?php echo __( 'Feature', 'squirrels_inventory' ); ?>
+			<?php echo __( 'Add Feature', 'squirrels_inventory' ); ?>
 			<a href="?page=<?php echo $_REQUEST['page']; ?>" class="page-title-action">
 				<?php echo __( 'Cancel', 'squirrels_inventory' ); ?>
 			</a>
+
+			<button class="page-title-action" id="squirrels-feature-add"><?php echo __('Add'); ?></button>
 		</h1>
 
 		<table class="form-table">
@@ -40,7 +59,7 @@ if ( isset( $_GET[ 'action' ] ) )
 					</label>
 				</th>
 				<td>
-					<input name="title" id="squirrels-feature-title" placeholder="ex: Transmission">
+					<input name="title" id="squirrels-feature-title" placeholder="<?php echo __('ex: Transmission'); ?>">
 				</td>
 			</tr>
 			<tr>
@@ -64,25 +83,121 @@ if ( isset( $_GET[ 'action' ] ) )
 			</tr>
 		</table>
 
+		<table class="form-table" id="squirrels-feature-custom-options"></table>
+
 	<?php } elseif ( $action == 'edit' ) { ?>
 
+		<?php $feature = new \SquirrelsInventory\Feature( $_REQUEST[ 'id' ] ); ?>
+
 		<h1>
-			<?php echo __( 'Edit', 'squirrels_inventory' ); ?>
-			<?php echo __( 'Feature', 'squirrels_inventory' ); ?>
+			<?php echo __( 'Edit Feature', 'squirrels_inventory' ); ?>
 			<a href="?page=<?php echo $_REQUEST['page']; ?>" class="page-title-action">
 				<?php echo __( 'Cancel', 'squirrels_inventory' ); ?>
 			</a>
+
+			<button id="squirrels-feature-edit" class="page-title-action"><?php echo __( 'Edit' ); ?></button>
 		</h1>
+
+		<table class="form-table">
+			<tr>
+				<th>
+					<label for="squirrels-feature-title">
+						<?php echo __( 'Feature', 'squirrels_inventory' ); ?>:
+					</label>
+				</th>
+				<td>
+					<input name="title" id="squirrels-feature-title" placeholder="<?php echo __('ex: Transmission'); ?>" value="<?php echo $feature->getTitle(); ?>">
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<label for="squirrels-feature-type">
+						<?php echo __( 'Options', 'squirrels_inventory' ); ?>:
+					</label>
+				</th>
+				<td>
+					<select id="squirrels-feature-type">
+						<option value="0" <?php echo ( $feature->isTrueFalse() ) ? 'selected' : ''; ?>>
+							<?php echo __( 'Yes', 'squirrels_inventory' ); ?>
+							/
+							<?php echo __( 'No', 'squirrels_inventory' ); ?>
+						</option>
+						<option value="1" <?php echo ( !$feature->isTrueFalse() ) ? 'selected' : ''; ?>>
+							<?php echo __( 'Custom Options', 'squirrels_inventory' ); ?>
+						</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+
+		<table class="form-table" id="squirrels-feature-custom-options">
+			<?php if( !$feature->isTrueFalse() ) { ?>
+
+				<?php foreach( $feature->getOptions() as $index => $option ) { ?>
+
+					<tr class="squirrels-feature-custom-option">
+						<th></th>
+						<td>
+							<input type="radio" name="squirrels-feature-custom-option-default" <?php echo ( $option->isDefault() ) ? 'checked' : ''; ?>>
+							<input type="text" value="<?php echo $option->getTitle(); ?>" />
+							<span
+								class="
+									<?php echo ($index == 0) ? 'squirrels-feature-custom-option-add' : 'squirrels-feature-custom-option-remove'; ?>
+									<?php echo ($index == 0) ? 'dashicons-plus-alt' : 'dashicons-dismiss'; ?>
+									dashicons dashicons-plus-alt">
+							</span>
+						</td>
+					</tr>
+
+				<?php } ?>
+
+			<?php } ?>
+		</table>
 
 	<?php } elseif ( $action == 'delete' ) { ?>
 
+		<?php $feature = new \SquirrelsInventory\Feature( $_REQUEST[ 'id' ] ); ?>
+
 		<h1>
-			<?php echo __( 'Delete', 'squirrels_inventory' ); ?>
-			<?php echo __( 'Feature', 'squirrels_inventory' ); ?>
+			<?php echo __( 'Delete Feature', 'squirrels_inventory' ); ?>
+
 			<a href="?page=<?php echo $_REQUEST['page']; ?>" class="page-title-action">
 				<?php echo __( 'Cancel', 'squirrels_inventory' ); ?>
 			</a>
+
+			<button id="squirrels-feature-delete" class="page-title-action"><?php echo __( 'Delete' ); ?></button>
 		</h1>
+
+		<table class="form-table">
+			<tr>
+				<th><?php echo __( 'Feature' ); ?></th>
+				<td><?php echo $feature->getTitle(); ?></td>
+			</tr>
+
+			<?php if ( $feature->isTrueFalse() ) { ?>
+
+				<tr>
+					<th><?php echo __( 'Option' ); ?></th>
+					<td><?php echo __( 'Yes / No' ); ?></td>
+				</tr>
+
+			<?php } else { ?>
+
+				<tr>
+					<th><?php echo __( 'Option' ); ?></th>
+				</tr>
+
+				<?php foreach( $feature->getOptions() as $option ) { ?>
+					<tr>
+						<th></th>
+						<td><?php echo $option->getTitle(); echo ($option->isDefault()) ? ' - ' . __('Default') : ''; ?></td>
+					</tr>
+
+				<?php } ?>
+
+			<?php } ?>
+
+		</table>
 
 	<?php } else { ?>
 

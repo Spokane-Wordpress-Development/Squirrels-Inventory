@@ -16,7 +16,7 @@ class Feature {
 	private $updated_at;
 
 	/** @var FeatureOption[] $options */
-	private $options;
+	private $options = array();
 
 	/**
 	 * Feature constructor.
@@ -213,13 +213,17 @@ class Feature {
 	 */
 	private function removeEmptyOptions()
 	{
-		foreach ( $this->options as $index => $option )
+		if(count($this->options) > 0)
 		{
-			if ( strlen( $option->getTitle() ) == 0 )
+			foreach ( $this->options as $index => $option )
 			{
-				unset ( $this->options[ $index ] );
+				if ( strlen( $option->getTitle() ) == 0 )
+				{
+					unset ( $this->options[ $index ] );
+				}
 			}
 		}
+
 		return $this;
 	}
 

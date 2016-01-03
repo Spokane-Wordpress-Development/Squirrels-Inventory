@@ -71,14 +71,19 @@ class FeatureTable extends \WP_List_Table {
 		}
 
 		$total_items = $wpdb->query($sql);
+
 		$max_per_page = 10;
 		$paged = ( isset( $_GET[ 'paged' ] ) && is_numeric( $_GET['paged'] ) ) ? abs( round( $_GET[ 'paged' ])) : 1;
 		$total_pages = ceil( $total_items / $max_per_page );
+
 		if ( $paged > $total_pages )
 		{
 			$paged = $total_pages;
 		}
+
 		$offset = ( $paged - 1 ) * $max_per_page;
+		$offset = ( $offset < 0 ) ? 0 : $offset; //MySQL freaks out about LIMIT -10, 10 type stuff.
+
 		$sql .= "
 			LIMIT " . $offset . ", " . $max_per_page;
 
