@@ -2,7 +2,7 @@ var url_variables = url_variables || {};
 
 (function($){
 
-    if(url_variables.action == 'add')
+    if(url_variables.action == 'add' || (url_variables.action == 'edit' && $('.squirrels-feature-custom-option').length == 0))
     {
         addCustomFeatureOption();
     }
@@ -17,6 +17,13 @@ var url_variables = url_variables || {};
         addCustomFeatureOption();
     }).on('click', '.squirrels-feature-custom-option-remove', function(){
         $(this).closest('.squirrels-feature-custom-option').remove();
+    }).on('keypress', '.squirrels-feature-custom-option-input', function(e){
+        if(e.which == 13)
+        {
+            $('.squirrels-feature-custom-option-add').trigger('click');
+
+            $('.squirrels-feature-custom-option').first().find('input').focus();
+        }
     });
 
     $('#squirrels-feature-add, #squirrels-feature-edit').click(function(){
@@ -150,7 +157,7 @@ var url_variables = url_variables || {};
                 '<th></th>' +
                 '<td>' +
                     '<input type="radio" name="squirrels-feature-custom-option-default" ' + isDefault + '>' +
-                    '<input type="text" /><span class="squirrels-feature-custom-option-add dashicons dashicons-plus-alt"></span>' +
+                    '<input type="text" class="squirrels-feature-custom-option-input" /><span class="squirrels-feature-custom-option-add dashicons dashicons-plus-alt"></span>' +
                 '</td>' +
                 '</tr>'
             );
