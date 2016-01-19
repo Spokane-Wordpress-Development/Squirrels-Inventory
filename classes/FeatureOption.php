@@ -9,7 +9,7 @@
 
 namespace SquirrelsInventory;
 
-class FeatureOption {
+class FeatureOption implements \JsonSerializable {
 
 	/** @var Feature $feature */
 	private $feature;
@@ -31,6 +31,16 @@ class FeatureOption {
 			->setTitle( $title )
 			->setPosition( $position )
 			->setIsDefault( $is_default );
+	}
+
+	public function jsonSerialize() {
+
+		return [
+			'title' => $this->title,
+			'position' => $this->position,
+			'is_default' => $this->is_default
+		];
+
 	}
 
 	/**

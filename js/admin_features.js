@@ -1,4 +1,5 @@
 var url_variables = url_variables || {};
+var features = features || {};
 
 (function($){
 
@@ -167,4 +168,110 @@ var url_variables = url_variables || {};
             $('.squirrels-feature-custom-option').remove();
         }
     }
+
+
+/**********************************************************************************************************************/
+//Add, Edit, Delete Auto Page
+
+    $( '.squirrels-feature' ).change( function() {
+
+        var feature = features[ $(this).val() ];
+
+        var options = feature.options;
+
+        var html = '';
+
+        if(feature.is_true_false)
+        {
+            html = '<option value="1" selected>Yes</option><option value="0">No</option>';
+        }
+        else
+        {
+            for(var option in options)
+            {
+                if(options.hasOwnProperty(option))
+                {
+                    html += '<option value="' + options[option].position + '" ' + ( ( option.is_default ) ? 'selected' : '') + '>' + options[option].title + '</option>';
+                }
+            }
+        }
+
+        $(this).next().html(html);
+
+    } ).trigger('change');
+
+    $( '#squirrels-add-feature').click( function() {
+        //TODO: Add code to add aditional feature inputs
+    } );
+
+    $( '#squirrels-inventory-add', '#squirrels-inventory-edit' ).click( function() {
+
+        var id = (typeof url_variables.id != 'undefined') ? url_variables.id : 0;
+
+        var features = {};
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                action: 'squirrels_inventory_add',
+                id: id,
+                model_id: $('#squirrels_vehicle').val(),
+                inventory_number: $('#squirrels_inventory_number').val(),
+                vin: $('#squirrels_vin').val(),
+                year: $('#squirrels_year').val(),
+                odometer_reading: $('#squirrels_odometer_reading').val(),
+                is_visible: $('#squirrels_is_visible').val(),
+                features: features
+            },
+            success: function(r)
+            {
+                if(r.success > 0)
+                {
+                    location.href = '?page=squirrels_inventory';
+                }
+                else
+                {
+                    alert('There\'s been an error.');
+                }
+            },
+            error: function()
+            {
+                alert('There\'s been an error.');
+            }
+        });
+
+    } );
+
+    $( '#squirrels-inventory-delete' ).click( function() {
+
+        $.ajax({
+            url: ajaxurl,
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                action: 'squirrels_inventory_delete',
+                id: url_variables.id
+            },
+            success: function(r)
+            {
+                if(r.success > 0)
+                {
+                    location.href = '?page=squirrels_inventory';
+                }
+                else
+                {
+                    alert('There\'s been an error.');
+                }
+            },
+            error: function()
+            {
+                alert('There\'s been an error.');
+            }
+        });
+
+    } );
+
+
 })(jQuery);

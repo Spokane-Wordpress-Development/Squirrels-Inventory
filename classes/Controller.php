@@ -26,17 +26,41 @@ class Controller {
 		$table = $wpdb->prefix . "squirrels_features";
 		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
 			$sql = "
-			CREATE TABLE `" . $table . "`
-			(
-				`id` INT(11) NOT NULL AUTO_INCREMENT,
-				`title` VARCHAR(50) DEFAULT NULL,
-				`is_system` TINYINT(4) DEFAULT NULL,
-				`is_true_false` TINYINT(4) DEFAULT NULL,
-				`options` TEXT DEFAULT NULL,
-				`created_at` DATETIME DEFAULT NULL,
-				`updated_at` DATETIME DEFAULT NULL,
-				PRIMARY KEY (`id`)
-			)";
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`title` VARCHAR(50) DEFAULT NULL,
+					`is_system` TINYINT(4) DEFAULT NULL,
+					`is_true_false` TINYINT(4) DEFAULT NULL,
+					`options` TEXT DEFAULT NULL,
+					`created_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`)
+				)";
+			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+			dbDelta( $sql );
+		}
+
+		/** SQUIRRELS_INVENTORY table */
+		$table = $wpdb->prefix . "squirrels_inventory";
+		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+			$sql = "
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`inventory_number` VARCHAR(50) DEFAULT NULL,
+					`vin` VARCHAR(50) DEFAULT NULL,
+					`make_id` INT(11) DEFAULT NULL,
+					`model_id` INT(11) DEFAULT NULL,
+					`year` INT(2) DEFAULT NULL,
+					`odometer_reading` INT(11) DEFAULT NULL,
+					`features` TEXT,
+					`is_visible` TINYINT(4) DEFAULT 0,
+					`created_at` DATETIME DEFAULT NULL,
+					`imported_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`)
+				)";
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
 			dbDelta( $sql );
 		}
@@ -335,6 +359,11 @@ class Controller {
 	{
 		wp_enqueue_script( 'squirrels-admin-features', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin_features.js', array( 'jquery' ), time(), TRUE );
 		wp_localize_script( 'squirrels-admin-features', 'url_variables', $_GET );
+
+		/* Added so the inventory table will display better. Maybe we can use only part of the BS stylesheet (table) instead though. */
+//		wp_enqueue_script( 'squirrels-admin-bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js' );
+//		wp_enqueue_style( 'squirrels-admin-bootstrap-css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' );
+		wp_enqueue_style( 'squirrels-admin-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css' );
 	}
 
 	/**
@@ -407,5 +436,51 @@ class Controller {
 
 		//Since delete doesn't return anything, this will check for success
 		return $feature->getId() == NULL;
+	}
+
+	public function addToInventory()
+	{
+		//TODO: This is not working, not sure how to get the make_id from the model_id
+		$model = new Model( $_REQUEST['model_id'] );
+
+		$auto = new Auto();
+		$auto
+			->setInventoryNumber( $_REQUEST['inventory_number'] )
+			->setVin( $_REQUEST['vin'] )
+			->setMakeId( $model->getMakeId() )
+			->setModelId( $_REQUEST['model_id'] )
+			->setYear( $_REQUEST['year'] )
+			->setOdometerReading( $_REQUEST['odometer_reading'] );
+
+		$auto->create();
+
+		return $auto->getId();
+	}
+
+	public function editInventory()
+	{
+		//TODO: This is not working, not sure how to get the make_id from the model_id
+		$model = new Model( $_REQUEST['model_id'] );
+
+		$auto = new Auto( $_REQUEST['id'] );
+		$auto
+			->setInventoryNumber( $_REQUEST['inventory_number'] )
+			->setVin( $_REQUEST['vin'] )
+			->setMakeId( $model->getMakeId() )
+			->setModelId( $_REQUEST['model_id'] )
+			->setYear( $_REQUEST['year'] )
+			->setOdometerReading( $_REQUEST['odometer_reading'] );
+
+		$auto->update();
+
+		return $auto->getId();
+	}
+
+	public function deleteFromInventory()
+	{
+		$auto = new Auto( $_REQUEST['id'] );
+		$auto->delete();
+
+		return $auto->getId() == NULL;
 	}
 }

@@ -6,7 +6,7 @@
 
 namespace SquirrelsInventory;
 
-class Feature {
+class Feature implements \JsonSerializable{
 
 	private $id;
 	private $title;
@@ -28,6 +28,20 @@ class Feature {
 		$this
 			->setId( $id )
 			->read();
+	}
+
+	public function jsonSerialize() {
+
+		return [
+			'id' => $this->id,
+			'title' => $this->title,
+			'is_system' => $this->is_system,
+			'is_true_false' => $this->is_true_false,
+			'created_at' => $this->created_at,
+			'updated_at' => $this->updated_at,
+			'options' => $this->options
+		];
+
 	}
 
 	/**

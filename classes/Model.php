@@ -106,7 +106,7 @@ class Model extends CustomPostType {
 	/**
 	 * This returns all models sorted by Make Title, then Model Title
 	 *
-	 * @return Model[]
+	 * @return \SquirrelsInventory\Model[]
 	 */
 	public static function getAllModels()
 	{
@@ -126,7 +126,8 @@ class Model extends CustomPostType {
 			'post_type' => self::CUSTOM_POST_TYPE,
 			'post_status' => 'publish',
 			'posts_per_page' => -1,
-			'orderby' => array( 'title' => 'ASC' )
+			'orderby' => 'title',
+            'order' => 'ASC'
 		) );
 
 		if( $query->have_posts() ) {

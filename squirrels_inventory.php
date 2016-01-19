@@ -22,6 +22,7 @@ require_once ( 'classes/FeatureOption.php' );
 require_once ( 'classes/Make.php' );
 require_once ( 'classes/Model.php' );
 require_once ( 'classes/FeatureTable.php' );
+require_once ( 'classes/AutoTable.php' );
 
 /** controller object */
 $squirrel = new \SquirrelsInventory\Controller;
@@ -81,6 +82,31 @@ if ( is_admin() )
 
 		header( 'Content-Type: application/json' );
 		echo json_encode( array('success' => $squirrel->deleteFeature() ) );
+		exit;
+
+	} );
+
+	add_action( 'wp_ajax_squirrels_inventory_add', function() use ( $squirrel ) {
+
+		if( $_REQUEST[ 'id' ] == 0 )
+		{
+			$response = $squirrel->addToInventory();
+		}
+		else
+		{
+			$response = $squirrel->editInventory();
+		}
+
+//		header( 'Content-Type: application/json' );
+		echo json_encode( $response );
+		exit;
+
+	} );
+
+	add_action( 'wp_ajax_squirrels_inventory_delete', function() use ($squirrel) {
+
+		header( 'Content-Type: application/json' );
+		echo json_encode( array('success' => $squirrel->deleteFromInventory() ) );
 		exit;
 
 	} );
