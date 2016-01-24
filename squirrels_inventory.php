@@ -97,8 +97,7 @@ if ( is_admin() )
 			$response = $squirrel->editInventory();
 		}
 
-//		header( 'Content-Type: application/json' );
-		echo json_encode( $response );
+		echo $response;
 		exit;
 
 	} );

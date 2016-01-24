@@ -23,6 +23,7 @@ if ( isset( $_GET[ 'action' ] ) )
 		<?php
 		$models = \SquirrelsInventory\Model::getAllModels();
 		$features = \SquirrelsInventory\Feature::getAllFeatures();
+		$auto_types = \SquirrelsInventory\AutoType::getAllAutoTypes();
 		?>
 
 		<h1>
@@ -31,13 +32,40 @@ if ( isset( $_GET[ 'action' ] ) )
 				<?php echo __( 'Cancel', 'squirrels_inventory' ); ?>
 			</a>
 
-			<button class="page-title-action" id="squirrels-inventory-add"><?php echo __('Add'); ?></button>
+			<button class="page-title-action" id="squirrels-inventory-add"><?php echo __('Add', 'squirrels_inventory'); ?></button>
 		</h1>
+
+		<div class="update-nag">
+			<?php _e('If your make and model are not in the drop-down list, you can add them using the "New Make" and "New Model" fields below.', 'squirrels_inventory'); ?>
+		</div>
 
 		<table class="form-table">
 			<tr>
 				<th>
-					<label for="squirrels_vehicle">Vehicle:</label>
+					<label for="squirrels_auto_type">Type:</label>
+				</th>
+				<td>
+					<select id="squirrels_auto_type">
+						<?php foreach ($auto_types as $auto_type) { ?>
+							<option value="<?php echo $auto_type->getId(); ?>">
+								<?php echo $auto_type->getTitle(); ?>
+							</option>
+						<?php } ?>
+					</select>
+				</td>
+				<th>
+					<label for="squirrels_is_visible">Visible:</label>
+				</th>
+				<td>
+					<select id="squirrels_is_visible">
+						<option value="1" selected>Yes</option>
+						<option value="0">No</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<label for="squirrels_vehicle">Make/Model:</label>
 				</th>
 				<td>
 					<select id="squirrels_vehicle">
@@ -66,13 +94,21 @@ if ( isset( $_GET[ 'action' ] ) )
 					</select>
 				</td>
 				<th>
-					<label for="squirrels_is_visible">Visible:</label>
+					<label for="squirrels_new_make">New Make:</label>
 				</th>
 				<td>
-					<select id="squirrels_is_visible">
-						<option value="1" selected>Yes</option>
-						<option value="0">No</option>
-					</select>
+					<input id="squirrels_new_make" />
+				</td>
+			</tr>
+			<tr>
+				<th colspan="2">
+
+				</th>
+				<th>
+					<label for="squirrels_new_model">New Model:</label>
+				</th>
+				<td>
+					<input id="squirrels_new_model" />
 				</td>
 			</tr>
 			<tr>
@@ -101,6 +137,22 @@ if ( isset( $_GET[ 'action' ] ) )
 				</th>
 				<td>
 					<input id="squirrels_odometer_reading" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<label for="squirrels_price">Price:</label>
+				</th>
+				<td>
+					<input id="squirrels_price" />
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<label for="squirrels_description">Description:</label>
+				</th>
+				<td colspan="2">
+					<textarea id="squirrels_description" style="width:100%; height:200px;"></textarea>
 				</td>
 			</tr>
 			<tr>

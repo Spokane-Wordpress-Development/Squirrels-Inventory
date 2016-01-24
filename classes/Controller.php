@@ -50,12 +50,15 @@ class Controller {
 					`id` INT(11) NOT NULL AUTO_INCREMENT,
 					`inventory_number` VARCHAR(50) DEFAULT NULL,
 					`vin` VARCHAR(50) DEFAULT NULL,
+					`type_id` INT(11) DEFAULT NULL,
 					`make_id` INT(11) DEFAULT NULL,
 					`model_id` INT(11) DEFAULT NULL,
 					`year` INT(2) DEFAULT NULL,
 					`odometer_reading` INT(11) DEFAULT NULL,
 					`features` TEXT,
 					`is_visible` TINYINT(4) DEFAULT 0,
+					`description` TEXT,
+					`price` DECIMAL(11,4) DEFAULT NULL,
 					`created_at` DATETIME DEFAULT NULL,
 					`imported_at` DATETIME DEFAULT NULL,
 					`updated_at` DATETIME DEFAULT NULL,
@@ -64,6 +67,10 @@ class Controller {
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
 			dbDelta( $sql );
 		}
+
+		$make_id = 0;
+		$model_id = 0;
+		$type_id = 0;
 
 		/** Pre-load makes and models */
 		$makes = $this->getMakesModels();
@@ -81,6 +88,12 @@ class Controller {
 					->setTitle( $model_data['title'] )
 					->setMakeId( $make->getId() )
 					->create();
+
+				if ($make->getTitle() == 'Ford' && $model->getTitle() == 'Mustang')
+				{
+					$make_id = $make->getId();
+					$model_id = $model->getId();
+				}
 			}
 		}
 
@@ -92,6 +105,11 @@ class Controller {
 			$auto_type
 				->setTitle( $title )
 				->create();
+
+			if ($title == 'Car')
+			{
+				$type_id = $auto_type->getId();
+			}
 		}
 
 		/** Add a couple sample Features */
@@ -109,6 +127,24 @@ class Controller {
 			$feature
 				->setTitle( 'AWD' )
 				->setIsTrueFalse( TRUE )
+				->create();
+		}
+
+		/** Add a sample Car */
+		if ($make_id > 0 && $model_id > 0 && $type_id > 0)
+		{
+			$auto = new Auto();
+			$auto
+				->setTypeId( $type_id )
+				->setInventoryNumber( '123456' )
+				->setVin( 'QWERTY' )
+				->setMakeId( $make_id )
+				->setModelId( $model_id )
+				->setYear( '1965' )
+				->setOdometerReading( 50000 )
+				->setPrice( 100000 )
+				->setDescription( 'This is a sample car.' )
+				->setIsVisible( TRUE )
 				->create();
 		}
 	}
@@ -357,8 +393,8 @@ class Controller {
 	 */
 	public function enqueueAdminScripts()
 	{
-		wp_enqueue_script( 'squirrels-admin-features', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin_features.js', array( 'jquery' ), time(), TRUE );
-		wp_localize_script( 'squirrels-admin-features', 'url_variables', $_GET );
+		wp_enqueue_script( 'squirrels-admin', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin.js', array( 'jquery' ), time(), TRUE );
+		wp_localize_script( 'squirrels-admin', 'url_variables', $_GET );
 
 		/* Added so the inventory table will display better. Maybe we can use only part of the BS stylesheet (table) instead though. */
 //		wp_enqueue_script( 'squirrels-admin-bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js' );
@@ -440,38 +476,75 @@ class Controller {
 
 	public function addToInventory()
 	{
-		//TODO: This is not working, not sure how to get the make_id from the model_id
-		$model = new Model( $_REQUEST['model_id'] );
+		if ( strlen( $_REQUEST['new_make'] ) > 0 && strlen( $_REQUEST['new_model'] ) > 0 )
+		{
+			$make = new Make();
+			$make
+				->setTitle( $_REQUEST['new_make'] )
+				->create();
+
+			$model = new Model();
+			$model
+				->setTitle( $_REQUEST['new_model'] )
+				->setMake( $make )
+				->create();
+		}
+		else
+		{
+			$model = new Model( $_REQUEST['model_id'] );
+			$model->loadMake();
+		}
 
 		$auto = new Auto();
 		$auto
+			->setPrice( $_REQUEST['price'] )
+			->setTypeId( $_REQUEST['type_id'] )
 			->setInventoryNumber( $_REQUEST['inventory_number'] )
 			->setVin( $_REQUEST['vin'] )
 			->setMakeId( $model->getMakeId() )
-			->setModelId( $_REQUEST['model_id'] )
+			->setModelId( $model->getId() )
 			->setYear( $_REQUEST['year'] )
-			->setOdometerReading( $_REQUEST['odometer_reading'] );
-
-		$auto->create();
+			->setOdometerReading( preg_replace('/\D/', '', $_REQUEST['odometer_reading']) )
+			->setDescription( $_REQUEST['description'] )
+			->setIsVisible( $_REQUEST['is_visible'] )
+			->create();
 
 		return $auto->getId();
 	}
 
 	public function editInventory()
 	{
-		//TODO: This is not working, not sure how to get the make_id from the model_id
-		$model = new Model( $_REQUEST['model_id'] );
+		if ( strlen( $_REQUEST['new_make'] ) > 0 && strlen( $_REQUEST['new_model'] ) > 0 )
+		{
+			$make = new Make();
+			$make
+				->setTitle( $_REQUEST['new_make'] )
+				->create();
+
+			$model = new Model();
+			$model
+				->setTitle( $_REQUEST['new_model'] )
+				->setMake( $make )
+				->create();
+		}
+		else
+		{
+			$model = new Model( $_REQUEST['model_id'] );
+			$model->loadMake();
+		}
 
 		$auto = new Auto( $_REQUEST['id'] );
 		$auto
+			->setPrice( $_REQUEST['price'] )
+			->setTypeId( $_REQUEST['type_id'] )
 			->setInventoryNumber( $_REQUEST['inventory_number'] )
 			->setVin( $_REQUEST['vin'] )
 			->setMakeId( $model->getMakeId() )
-			->setModelId( $_REQUEST['model_id'] )
+			->setModelId( $model->getId() )
 			->setYear( $_REQUEST['year'] )
-			->setOdometerReading( $_REQUEST['odometer_reading'] );
-
-		$auto->update();
+			->setDescription( $_REQUEST['description'] )
+			->setOdometerReading( preg_replace('/\D/', '', $_REQUEST['odometer_reading']) )
+			->update();
 
 		return $auto->getId();
 	}

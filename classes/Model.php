@@ -12,8 +12,20 @@ class Model extends CustomPostType {
 
 	/** @var Make $make */
 	private $make;
-
 	private $make_id;
+
+	public function loadMake()
+	{
+		if ( $this->id !== NULL )
+		{
+			$custom = get_post_custom( $this->id );
+			$this->make_id = ( array_key_exists( 'make_id', $custom ) ) ? $custom[ 'make_id' ][0] : NULL;
+			if ( $this->make_id !== NULL )
+			{
+				$this->make = new Make( $this->make_id );
+			}
+		}
+	}
 
 	/**
 	 *
@@ -69,13 +81,14 @@ class Model extends CustomPostType {
 	}
 
 	/**
-	 * @param $make
+	 * @param Make $make
 	 *
 	 * @return $this
 	 */
-	public function setMake( $make )
+	public function setMake(Make $make )
 	{
 		$this->make = $make;
+		$this->make_id = $make->getId();
 
 		return $this;
 	}

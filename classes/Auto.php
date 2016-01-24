@@ -19,11 +19,14 @@ class Auto {
 	private $id = 0;
 	private $inventory_number;
 	private $vin;
+	private $type_id;
 	private $make_id;
 	private $model_id;
 	private $year;
 	private $odometer_reading;
 	private $is_visible = FALSE;
+	private $description;
+	private $price;
 	private $created_at;
 	private $imported_at;
 	private $updated_at;
@@ -42,6 +45,26 @@ class Auto {
 	 */
 	public function setId( $id ) {
 		$this->id = $id;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getPrice()
+	{
+		return $this->price;
+	}
+
+	/**
+	 * @param mixed $price
+	 *
+	 * @return Auto
+	 */
+	public function setPrice( $price )
+	{
+		$this->price = (is_numeric($price)) ? abs(round($price, 2)) : NULL;
 
 		return $this;
 	}
@@ -78,6 +101,31 @@ class Auto {
 	 */
 	public function setVin( $vin ) {
 		$this->vin = $vin;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getTypeId() {
+		return $this->type_id;
+	}
+
+	/**
+	 * @param mixed $type_id
+	 *
+	 * @return Auto
+	 */
+	public function setTypeId( $type_id ) {
+		if(is_numeric($type_id) && $type_id > 0)
+		{
+			$this->type_id = $type_id;
+		}
+		else
+		{
+			$this->type_id = NULL;
+		}
 
 		return $this;
 	}
@@ -171,7 +219,7 @@ class Auto {
 	/**
 	 * @return boolean
 	 */
-	public function isIsVisible() {
+	public function isVisible() {
 		return $this->is_visible;
 	}
 
@@ -181,18 +229,38 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setIsVisible( $is_visible ) {
-		$this->is_visible = $is_visible;
+		$this->is_visible = ($is_visible == 1 || $is_visible === TRUE) ? TRUE : FALSE;
 
 		return $this;
 	}
 
 	/**
-	 * @param string $feature
+	 * @return mixed
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
+	/**
+	 * @param mixed $description
+	 *
+	 * @return Auto
+	 */
+	public function setDescription( $description )
+	{
+		$this->description = $description;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $format
 	 *
 	 * @return mixed
 	 */
-	public function getCreatedAt( $feature='Y-m-d H:i:s' ) {
-		return date( $feature, $this->created_at );
+	public function getCreatedAt( $format=NULL ) {
+		return ($format === NULL) ? $this->created_at : date( $format, $this->created_at );
 	}
 
 	/**
@@ -201,18 +269,18 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setCreatedAt( $created_at ) {
-		$this->created_at = date( 'Y-m-d H:i:s', $created_at );
+		$this->created_at = (is_numeric($created_at) || $created_at === NULL) ? $created_at : date( 'Y-m-d H:i:s', $created_at );
 
 		return $this;
 	}
 
 	/**
-	 * @param string $feature
+	 * @param string $format
 	 *
 	 * @return mixed
 	 */
-	public function getImportedAt( $feature='Y-m-d H:i:s' ) {
-		return date($feature, $this->imported_at);
+	public function getImportedAt( $format=NULL ) {
+		return ($format === NULL) ? $this->imported_at : date( $format, $this->imported_at );
 	}
 
 	/**
@@ -221,18 +289,18 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setImportedAt( $imported_at ) {
-		$this->imported_at = date( 'Y-m-d H:i:s', $imported_at );
+		$this->imported_at = (is_numeric($imported_at) || $imported_at === NULL) ? $imported_at : date( 'Y-m-d H:i:s', $imported_at );
 
 		return $this;
 	}
 
 	/**
-	 * @param string $feature
+	 * @param string $format
 	 *
 	 * @return mixed
 	 */
-	public function getUpdatedAt( $feature='Y-m-d H:i:s' ) {
-		return date($feature, $this->updated_at);
+	public function getUpdatedAt( $format=NULL ) {
+		return ($format === NULL) ? $this->updated_at : date( $format, $this->updated_at );
 	}
 
 	/**
@@ -241,7 +309,7 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setUpdatedAt( $updated_at ) {
-		$this->updated_at = date( 'Y-m-d H:i:s', $updated_at );
+		$this->updated_at = (is_numeric($updated_at) || $updated_at === NULL) ? $updated_at : date( 'Y-m-d H:i:s', $updated_at );
 
 		return $this;
 	}
@@ -278,6 +346,7 @@ class Auto {
 	 */
 	public function setType( $type ) {
 		$this->type = $type;
+		$this->type_id = $type->getId();
 
 		return $this;
 	}
@@ -296,6 +365,7 @@ class Auto {
 	 */
 	public function setMake( $make ) {
 		$this->make = $make;
+		$this->make_id = $make->getId();
 
 		return $this;
 	}
@@ -314,6 +384,7 @@ class Auto {
 	 */
 	public function setModel( $model ) {
 		$this->model = $model;
+		$this->model_id = $model->getId();
 
 		return $this;
 	}
@@ -322,12 +393,16 @@ class Auto {
 	{
 		$this
 			->setId( $row->id )
+			->setTypeId( $row->type_id )
 			->setVin( $row->vin )
 			->setMakeId( $row->make_id )
 			->setModelId( $row->model_id )
 			->setInventoryNumber( $row->inventory_number )
 			->setYear( $row->year )
 			->setOdometerReading( $row->odometer_reading )
+			->setDescription( $row->description )
+			->setPrice( $row->price )
+			->setIsVisible( $row->is_visible )
 			->setCreatedAt( $row->created_at )
 			->setImportedAt( $row->imported_at )
 			->setUpdatedAt( $row->updated_at );
@@ -341,40 +416,39 @@ class Auto {
 	{
 		global $wpdb;
 
-		if (
-			strlen( $this->inventory_number ) > 0 &&
-			strlen( $this->vin ) > 0 &&
-			strlen( $this->make_id ) > 0 &&
-			strlen( $this->model_id ) > 0 &&
-			strlen( $this->year ) > 0 &&
-			strlen( $this->odometer_reading ) > 0
-		) {
-
+		if ( $this->type_id !== NULL )
+		{
 			$this
-				->setCreatedAt( date( 'Y-m-d H:i:s' ) )
-				->setUpdatedAt( date( 'Y-m-d H:i:s' ) );
+				->setCreatedAt( time() )
+				->setUpdatedAt( time() );
 
 			$wpdb->insert(
 				$wpdb->prefix . 'squirrels_inventory',
 				array(
+					'price' => $this->price,
+					'type_id' => $this->type_id,
 					'inventory_number' => $this->inventory_number,
 					'vin' => $this->vin,
 					'make_id' => $this->make_id,
 					'model_id' => $this->model_id,
 					'year' => $this->year,
 					'odometer_reading' => $this->odometer_reading,
-					'is_visible' => intval( $this->is_visible ),
+					'is_visible' => ( $this->is_visible ) ? 1 : 0,
+					'description' => $this->description,
 					'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 				),
 				array(
+					'%f',
 					'%d',
+					'%s',
 					'%s',
 					'%d',
 					'%d',
 					'%d',
 					'%d',
-					'$d',
+					'%d',
+					'%s',
 					'%s',
 					'%s'
 				)
@@ -413,40 +487,39 @@ class Auto {
 	{
 		global $wpdb;
 
-		if (
-			strlen( $this->inventory_number ) > 0 &&
-			strlen( $this->vin ) > 0 &&
-			strlen( $this->make_id ) > 0 &&
-			strlen( $this->model_id ) > 0 &&
-			strlen( $this->year ) > 0 &&
-			strlen( $this->odometer_reading ) > 0
-		) {
-
-			$this->setUpdatedAt( date( 'Y-m-d H:i:s' ) );
+		if ( $this->type_id !== NULL )
+		{
+			$this->setUpdatedAt( time() );
 
 			$wpdb->update(
 				$wpdb->prefix . 'squirrels_inventory',
 				array(
+					'price' => $this->price,
+					'type_id' => $this->type_id,
 					'inventory_number' => $this->inventory_number,
 					'vin' => $this->vin,
 					'make_id' => $this->make_id,
 					'model_id' => $this->model_id,
 					'year' => $this->year,
 					'odometer_reading' => $this->odometer_reading,
-					'is_visible' => intval( $this->is_visible ),
+					'is_visible' => ( $this->is_visible ) ? 1 : 0,
+					'description' => $this->description,
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 				),
 				array(
 					'id' => $this->id
 				),
 				array(
+					'%f',
 					'%d',
+					'%s',
 					'%s',
 					'%d',
 					'%d',
 					'%d',
 					'%d',
-					'$d',
+					'%d',
+					'%s',
 					'%s'
 				),
 				array(

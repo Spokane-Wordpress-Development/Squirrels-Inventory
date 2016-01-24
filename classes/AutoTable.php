@@ -1,6 +1,5 @@
 <?php
 
-
 namespace SquirrelsInventory;
 
 if ( ! class_exists( 'WP_List_Table' ) ) {
@@ -28,12 +27,13 @@ class AutoTable extends \WP_List_Table {
 	{
 		return array(
 			'inventory_number' => __( 'Inventory #', 'squirrels_inventory'),
+			'type' => __( 'Type', 'squirrels_inventory'),
 			'make' => __( 'Make', 'squirrels_inventory'),
 			'model' => __( 'Model', 'squirrels_inventory'),
 			'year' => __( 'Year', 'squirrels_inventory'),
 			'vin' => __( 'Vin', 'squirrels_inventory'),
 			'odometer_reading' => __( 'Odometer', 'squirrels_inventory' ),
-			'features' => __( 'Features', 'squirrels_inventory' ),
+			'price' => __( 'Price', 'squirrels_inventory' ),
 			'is_visible' => __( 'Visible', 'squirrels_inventory' ),
 			'updated_at' => __( 'Last Updated', 'squirrels_inventory' )
 		);
@@ -47,8 +47,11 @@ class AutoTable extends \WP_List_Table {
 		return array(
 			'inventory_number' => array( 'inventory_number', TRUE ),
 			'updated_at' => array( 'updated_at', TRUE ),
-			'make' => array( 'make_id', TRUE ),
-			'model' => array( 'model_id', TRUE ),
+			'type' => array( '3', TRUE ),
+			'make' => array( '1', TRUE ),
+			'model' => array( '2', TRUE ),
+			'price' => array( 'price', TRUE ),
+			'vin' => array( 'vin', TRUE ),
 			'odometer_reading' => array( 'odometer_reading', TRUE ),
 			'is_visible' => array( 'is_visible', TRUE ),
 			'year' => array( 'year', TRUE )
@@ -65,23 +68,19 @@ class AutoTable extends \WP_List_Table {
 		switch( $column_name ) {
 			case 'inventory_number':
 			case 'vin':
+			case 'type':
 			case 'make':
 			case 'model':
 			case 'year':
-			case 'updated_at':
 				return $item->$column_name;
-			case 'features':
-				/** @var Feature $feature */
-				foreach( $item->selected_features as $title => $option )
-				{
-					echo $title . ': ' . ( ( $option == NULL) ? __( 'Yes', 'squirrels_inventory' ) : $option ) . '<br>';
-				}
-
-				return null;
+			case 'updated_at':
+				return date('n/j/Y', strtotime( $item->$column_name ) );
 			case 'is_visible':
 				return ( filter_var( $item->$column_name, FILTER_VALIDATE_BOOLEAN ) ) ? __( 'Yes', 'squirrels_inventory' ) : __( 'No', 'squirrels_inventory' ) ;
 			case 'odometer_reading':
 				return number_format( $item->$column_name );
+			case 'price':
+				return '$' . number_format( $item->$column_name, 2 );
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes
 		}
@@ -103,15 +102,18 @@ class AutoTable extends \WP_List_Table {
 		 */
 		$sql = "
 			SELECT
-				p_makes.post_title as make,
-				p_models.post_title as model,
+				p_makes.post_title AS make,
+				p_models.post_title AS model,
+				p_types.post_title AS `type`,
 				si.*
 			FROM
 				" . $wpdb->prefix . "squirrels_inventory si
 				JOIN " . $wpdb->prefix . "posts p_makes
 					ON p_makes.id = si.make_id
 				JOIN " . $wpdb->prefix . "posts p_models
-					ON p_models.id = si.model_id";
+					ON p_models.id = si.model_id
+				JOIN " . $wpdb->prefix . "posts p_types
+					ON p_types.id = si.type_id";
 		if ( isset( $_GET[ 'orderby' ] ) )
 		{
 			foreach ( $sortable as $s )

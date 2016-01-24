@@ -204,7 +204,7 @@ var features = features || {};
         //TODO: Add code to add aditional feature inputs
     } );
 
-    $( '#squirrels-inventory-add', '#squirrels-inventory-edit' ).click( function() {
+    $( '#squirrels-inventory-add, #squirrels-inventory-edit' ).click( function() {
 
         var id = (typeof url_variables.id != 'undefined') ? url_variables.id : 0;
 
@@ -217,27 +217,37 @@ var features = features || {};
             data: {
                 action: 'squirrels_inventory_add',
                 id: id,
+                price: $('#squirrels_price').val(),
+                type_id: $('#squirrels_auto_type').val(),
                 model_id: $('#squirrels_vehicle').val(),
+                new_make: $('#squirrels_new_make').val(),
+                new_model: $('#squirrels_new_model').val(),
                 inventory_number: $('#squirrels_inventory_number').val(),
                 vin: $('#squirrels_vin').val(),
                 year: $('#squirrels_year').val(),
                 odometer_reading: $('#squirrels_odometer_reading').val(),
                 is_visible: $('#squirrels_is_visible').val(),
+                description: $('#squirrels_description').val(),
                 features: features
             },
             success: function(r)
             {
-                if(r.success > 0)
+                if(r != '0')
                 {
                     location.href = '?page=squirrels_inventory';
                 }
                 else
                 {
+                    console.log(r);
                     alert('There\'s been an error.');
                 }
             },
-            error: function()
+            error: function(x, y, z)
             {
+                console.log(x.responseText);
+                console.log(x);
+                console.log(y);
+                console.log(z);
                 alert('There\'s been an error.');
             }
         });
@@ -262,11 +272,16 @@ var features = features || {};
                 }
                 else
                 {
+                    console.log(r);
                     alert('There\'s been an error.');
                 }
             },
-            error: function()
+            error: function(x, y, z)
             {
+                console.log(x.responseText);
+                console.log(x);
+                console.log(y);
+                console.log(z);
                 alert('There\'s been an error.');
             }
         });

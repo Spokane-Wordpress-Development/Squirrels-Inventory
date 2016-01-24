@@ -19,7 +19,7 @@ class AutoType extends CustomPostType {
 	}
 
 	/**
-	 * @return array
+	 * @return AutoType[]
 	 */
 	public static function getAllAutoTypes()
 	{
