@@ -19,7 +19,7 @@ $autos = $this->getCurrentInventory();
 
 <?php } else { ?>
 
-	<div class="squirrels-inventory">
+	<div class="squirrels squirrels-inventory">
 		<?php foreach ($autos as $auto) { ?>
 			<div class="row">
 				<div class="col-md-4">

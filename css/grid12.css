@@ -875,9 +875,9 @@
         margin-left: 0%;
     }
 }
-.clearfix,
-.clearfix:before,
-.clearfix:after,
+.squirrels .clearfix,
+.squirrels .clearfix:before,
+.squirrels .clearfix:after,
 .container:before,
 .container:after,
 .container-fluid:before,
@@ -887,7 +887,7 @@
     content: " ";
     display: table;
 }
-.clearfix:after,
+.squirrels .clearfix:after,
 .container:after,
 .container-fluid:after,
 .row:after {
