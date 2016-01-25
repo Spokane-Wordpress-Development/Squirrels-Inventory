@@ -148,6 +148,22 @@ if ( isset( $_GET[ 'action' ] ) )
 					<input id="squirrels_odometer_reading" />
 				</td>
 			</tr>
+
+			<tr>
+				<th>
+					<label for="squirrels_exterior">Exterior:</label>
+				</th>
+				<td>
+					<input id="squirrels_exterior" placeholder="ex: Red" />
+				</td>
+				<th>
+					<label for="squirrels_interior">Interior:</label>
+				</th>
+				<td>
+					<input id="squirrels_interior" placeholder="ex: Black or Leather" />
+				</td>
+			</tr>
+
 			<tr>
 				<th>
 					<label for="squirrels_price">Price:</label>
@@ -156,6 +172,7 @@ if ( isset( $_GET[ 'action' ] ) )
 					<input id="squirrels_price" />
 				</td>
 			</tr>
+
 			<tr>
 				<th>
 					<label for="squirrels_description">Description:</label>

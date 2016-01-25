@@ -65,6 +65,8 @@ class Controller {
 					`is_featured` TINYINT(4) DEFAULT 0,
 					`description` TEXT,
 					`price` DECIMAL(11,4) DEFAULT NULL,
+					`exterior` VARCHAR(50) DEFAULT NULL,
+					`interior` VARCHAR(50) DEFAULT NULL,
 					`created_at` DATETIME DEFAULT NULL,
 					`imported_at` DATETIME DEFAULT NULL,
 					`updated_at` DATETIME DEFAULT NULL,
@@ -150,6 +152,8 @@ class Controller {
 				->setOdometerReading( 50000 )
 				->setPrice( 100000 )
 				->setDescription( 'This is a sample car.' )
+				->setExterior( 'Red' )
+				->setInterior( 'Black' )
 				->setIsVisible( TRUE )
 				->create();
 		}
@@ -577,6 +581,8 @@ class Controller {
 			->setDescription( $_REQUEST['description'] )
 			->setIsVisible( $_REQUEST['is_visible'] )
 			->setIsFeatured( $_REQUEST['is_featured'] )
+			->setExterior( $_REQUEST['exterior'] )
+			->setInterior( $_REQUEST['interior'] )
 			->create();
 
 		return $auto->getId();

@@ -229,6 +229,8 @@ var features = features || {};
                 is_visible: $('#squirrels_is_visible').val(),
                 is_featured: $('#squirrels_is_featured').val(),
                 description: $('#squirrels_description').val(),
+                exterior: $('#squirrels_exterior').val(),
+                interior: $('#squirrels_interior').val(),
                 features: features
             },
             success: function(r)

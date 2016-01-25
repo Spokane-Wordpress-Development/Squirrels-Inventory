@@ -28,6 +28,8 @@ class Auto {
 	private $is_featured = FALSE;
 	private $description;
 	private $price;
+	private $exterior;
+	private $interior;
 	private $created_at;
 	private $imported_at;
 	private $updated_at;
@@ -73,6 +75,42 @@ class Auto {
 	public function setPrice( $price )
 	{
 		$this->price = (is_numeric($price)) ? abs(round($price, 2)) : NULL;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getExterior() {
+		return $this->exterior;
+	}
+
+	/**
+	 * @param mixed $exterior
+	 *
+	 * @return Auto
+	 */
+	public function setExterior( $exterior ) {
+		$this->exterior = $exterior;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getInterior() {
+		return $this->interior;
+	}
+
+	/**
+	 * @param mixed $interior
+	 *
+	 * @return Auto
+	 */
+	public function setInterior( $interior ) {
+		$this->interior = $interior;
 
 		return $this;
 	}
@@ -432,6 +470,8 @@ class Auto {
 			->setPrice( $row->price )
 			->setIsVisible( $row->is_visible )
 			->setIsFeatured( $row->is_featured )
+			->setExterior( $row->exterior )
+			->setInterior( $row->interior )
 			->setCreatedAt( $row->created_at )
 			->setImportedAt( $row->imported_at )
 			->setUpdatedAt( $row->updated_at );
@@ -489,6 +529,8 @@ class Auto {
 					'is_visible' => ( $this->is_visible ) ? 1 : 0,
 					'is_featured'  => ( $this->is_featured ) ? 1 : 0,
 					'description' => $this->description,
+					'exterior' => $this->exterior,
+					'interior' => $this->interior,
 					'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 				),
@@ -503,6 +545,8 @@ class Auto {
 					'%d',
 					'%d',
 					'%d',
+					'%s',
+					'%s',
 					'%s',
 					'%s',
 					'%s'
@@ -568,6 +612,8 @@ class Auto {
 					'is_visible' => ( $this->is_visible ) ? 1 : 0,
 					'is_featured' => ( $this->is_featured ) ? 1 : 0,
 					'description' => $this->description,
+					'exterior' => $this->exterior,
+					'interior' => $this->interior,
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 				),
 				array(
@@ -584,6 +630,8 @@ class Auto {
 					'%d',
 					'%d',
 					'%d',
+					'%s',
+					'%s',
 					'%s',
 					'%s'
 				),

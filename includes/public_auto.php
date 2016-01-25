@@ -26,10 +26,11 @@ $auto = new \SquirrelsInventory\Auto($id);
 			<?php echo $auto->getYear(); ?>
 			<?php echo $auto->getMake()->getTitle(); ?>
 			<?php echo $auto->getModel()->getTitle(); ?>
+			-
 			<?php if ($auto->getPrice() === NULL || $auto->getPrice() == 0) { ?>
-				(Call for Price)
+				Call for Price
 			<?php } else { ?>
-				($<?php echo number_format($auto->getPrice(), 2); ?>)
+				$<?php echo number_format($auto->getPrice(), 2); ?>
 			<?php } ?>
 		</h3>
 		<p><?php echo $auto->getDescription(); ?></p>
@@ -42,6 +43,12 @@ $auto = new \SquirrelsInventory\Auto($id);
 					<?php } ?>
 					<?php if (strlen($auto->getOdometerReading()) > 0) { ?>
 						<li>ODO: <?php echo number_format($auto->getOdometerReading()); ?></li>
+					<?php } ?>
+					<?php if (strlen($auto->getExterior()) > 0) { ?>
+						<li>Exterior: <?php echo $auto->getExterior(); ?></li>
+					<?php } ?>
+					<?php if (strlen($auto->getInterior()) > 0) { ?>
+						<li>Interior: <?php echo $auto->getInterior(); ?></li>
 					<?php } ?>
 					<?php for ($x=1; $x<=10; $x++) { ?>
 						<li>Sample Feature <?php echo $x; ?></li>
