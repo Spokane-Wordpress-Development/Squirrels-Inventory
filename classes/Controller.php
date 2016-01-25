@@ -166,6 +166,9 @@ class Controller {
 		{
 			session_start();
 		}
+
+		wp_enqueue_style( 'squirrels-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), time() );
+		wp_enqueue_style( 'squirrels-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/squirrels_inventory.css', array(), time() );
 	}
 
 	public function queryVars( $vars )
@@ -464,10 +467,6 @@ class Controller {
 	{
 		wp_enqueue_script( 'squirrels-admin', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin.js', array( 'jquery' ), time(), TRUE );
 		wp_localize_script( 'squirrels-admin', 'url_variables', $_GET );
-
-		/* Added so the inventory table will display better. Maybe we can use only part of the BS stylesheet (table) instead though. */
-//		wp_enqueue_script( 'squirrels-admin-bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js' );
-//		wp_enqueue_style( 'squirrels-admin-bootstrap-css', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' );
 		wp_enqueue_style( 'squirrels-admin-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css' );
 	}
 

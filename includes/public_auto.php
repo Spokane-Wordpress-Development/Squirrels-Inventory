@@ -20,22 +20,22 @@ $auto = new \SquirrelsInventory\Auto($id);
 
 <?php } else { ?>
 
-	<h3>
-		<?php echo $auto->getYear(); ?>
-		<?php echo $auto->getMake()->getTitle(); ?>
-		<?php echo $auto->getModel()->getTitle(); ?>
-		<?php if ($auto->getPrice() === NULL || $auto->getPrice() == 0) { ?>
-			(Call for Price)
-		<?php } else { ?>
-			($<?php echo number_format($auto->getPrice(), 2); ?>)
-		<?php } ?>
-	</h3>
-	<p><?php echo $auto->getDescription(); ?></p>
+	<div class="squirrels-auto">
 
-	<table style="border:0;">
-		<tr>
-			<td valign="top" style="border:0; width:75%">
+		<h3>
+			<?php echo $auto->getYear(); ?>
+			<?php echo $auto->getMake()->getTitle(); ?>
+			<?php echo $auto->getModel()->getTitle(); ?>
+			<?php if ($auto->getPrice() === NULL || $auto->getPrice() == 0) { ?>
+				(Call for Price)
+			<?php } else { ?>
+				($<?php echo number_format($auto->getPrice(), 2); ?>)
+			<?php } ?>
+		</h3>
+		<p><?php echo $auto->getDescription(); ?></p>
 
+		<div class="row">
+			<div class="col-md-6">
 				<ul>
 					<?php if (strlen($auto->getVin()) > 0) { ?>
 						<li>VIN: <?php echo $auto->getVin(); ?></li>
@@ -47,18 +47,32 @@ $auto = new \SquirrelsInventory\Auto($id);
 						<li>Sample Feature <?php echo $x; ?></li>
 					<?php } ?>
 				</ul>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-6">
+						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+					</div>
+					<div class="col-md-6">
+						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+					</div>
+					<div class="col-md-6">
+						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+					</div>
+					<div class="col-md-6">
+						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+					</div>
+					<div class="col-md-6">
+						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+					</div>
+					<div class="col-md-6">
+						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+					</div>
+				</div>
 
-			</td>
-			<td valign="top" style="border:0; width:25%">
+			</div>
+		</div>
 
-				<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg"><br>
-				<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg"><br>
-				<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg"><br>
-				<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg"><br>
-				<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg"><br>
-
-			</td>
-		</tr>
-	</table>
+	</div>
 
 <?php } ?>

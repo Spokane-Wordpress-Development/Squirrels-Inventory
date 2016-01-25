@@ -19,13 +19,13 @@ $autos = $this->getCurrentInventory();
 
 <?php } else { ?>
 
-	<table>
+	<div class="squirrels-inventory">
 		<?php foreach ($autos as $auto) { ?>
-			<tr>
-				<td valign="top">
-					<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
-				</td>
-				<td valign="top">
+			<div class="row">
+				<div class="col-md-4">
+					<img class="sq-thumb" src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+				</div>
+				<div class="col-md-4">
 					<a href="<?php echo $_SERVER['REQUEST_URI']; ?>?sq_action=auto&sq_data=<?php echo $auto->getId(); ?>">
 						<?php echo $auto->getYear(); ?>
 						<?php echo $auto->getMake()->getTitle(); ?>
@@ -37,16 +37,16 @@ $autos = $this->getCurrentInventory();
 					<?php if (strlen($auto->getOdometerReading()) > 0) { ?>
 						<br>ODO: <?php echo number_format($auto->getOdometerReading()); ?>
 					<?php } ?>
-				</td>
-				<td valign="top">
+				</div>
+				<div class="col-md-4">
 					<?php if ($auto->getPrice() === NULL || $auto->getPrice() == 0) { ?>
 						Call For Pricing
 					<?php } else { ?>
 						$<?php echo number_format($auto->getPrice(), 2); ?>
 					<?php } ?>
-				</td>
-			</tr>
+				</div>
+			</div>
 		<?php } ?>
-	</table>
+	</div>
 
 <?php } ?>
