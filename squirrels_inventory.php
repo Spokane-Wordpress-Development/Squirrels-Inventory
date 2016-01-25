@@ -36,6 +36,9 @@ add_action( 'init', array( $squirrel, 'init' ) );
 /** Create any custom post types */
 add_action( 'init', array( $squirrel, 'createPostTypes' ) );
 
+/** Capture form post */
+add_action ( 'init', array( $squirrel, 'formCapture' ) );
+
 /** Register Query Vars */
 add_filter( 'query_vars', array( $squirrel, 'queryVars') );
 

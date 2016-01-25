@@ -10,6 +10,9 @@ class Controller {
 	public $data = '';
 	public $return = '';
 	public $attributes = array();
+	public $base_page = '';
+	public $has_displayed_search = FALSE;
+	public $has_displayed_inventory = FALSE;
 
 	public function activate()
 	{
@@ -172,8 +175,18 @@ class Controller {
 			session_start();
 		}
 
+		$parts = explode('?', $_SERVER['REQUEST_URI']);
+		$this->base_page = $parts[0];
+
+		wp_enqueue_script( 'squirrels-inventory-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/squirrels.js', array( 'jquery' ), time(), TRUE );
+
 		wp_enqueue_style( 'squirrels-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), time() );
 		wp_enqueue_style( 'squirrels-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/squirrels_inventory.css', array(), time() );
+	}
+
+	public function param( $param, $default='' )
+	{
+		return (isset($_REQUEST[$param])) ? htmlspecialchars($_REQUEST[$param]) : $default;
 	}
 
 	public function queryVars( $vars )
@@ -195,7 +208,11 @@ class Controller {
 
 		$this->attributes = shortcode_atts( array(
 			'make' => '',
-			'type' => ''
+			'type' => '',
+			'search' => '',
+			'inventory' => '',
+			'page' => '',
+			'featured' => ''
 		), $attributes );
 
 		switch ( $this->action )
@@ -209,6 +226,45 @@ class Controller {
 
 				return $this->showPublicInventoryPage();
 				break;
+		}
+	}
+
+	public function getAttribute( $attribute )
+	{
+		if (array_key_exists($attribute, $this->attributes))
+		{
+			return strtolower($this->attributes[$attribute]);
+		}
+
+		return '';
+	}
+
+	public function formCapture()
+	{
+		if (isset($_POST['squirrels_action']))
+		{
+			if ($_POST['squirrels_action'] == 'search')
+			{
+				$parts = explode('?', $_POST['page']);
+				$page = $parts[0];
+				$qs = array();
+				if (count($parts) > 1)
+				{
+					$qs = explode('&', $parts[1]);
+				}
+
+				$vars = array('make', 'model', 'min', 'max', 'order');
+				foreach ($vars as $var)
+				{
+					if (isset($_POST[$var]) && strlen($_POST[$var]) > 0)
+					{
+						$qs[] = $var . '=' . $_POST[$var];
+					}
+				}
+
+				header('Location:'.$page.'?'.implode('&', $qs));
+				exit;
+			}
 		}
 	}
 
@@ -635,7 +691,7 @@ class Controller {
 		return $auto->getId() == NULL;
 	}
 
-	public function getCurrentInventory()
+	public function getCurrentInventory($make=NULL, $model=NULL, $min=NULL, $max=NULL, $order=NULL, $featured=NULL, $page=NULL)
 	{
 		global $wpdb;
 		$autos = array();
@@ -656,6 +712,53 @@ class Controller {
 					ON p_types.id = si.type_id
 			WHERE
 				si.is_visible = 1";
+		if (strlen($make) > 0 && is_numeric($make))
+		{
+			$sql .= "
+				AND si.make_id = " . abs(round($make));
+		}
+		if (strlen($model) > 0 && is_numeric($model))
+		{
+			$sql .= "
+				AND si.model_id = " . abs(round($model));
+		}
+		if (strlen($min) > 0 && is_numeric($min))
+		{
+			$sql .= "
+				AND si.price >= " . abs(round($min));
+		}
+		if (strlen($max) > 0 && is_numeric($max))
+		{
+			$sql .= "
+				AND si.price <= " . abs(round($max));
+		}
+		if ($featured == 'true')
+		{
+			$sql .= "
+				AND si.is_featured = 1";
+		}
+		switch ($order)
+		{
+			case 'price_asc':
+				$sql .= "
+					ORDER BY si.price ASC";
+				break;
+			case 'price_desc':
+				$sql .= "
+					ORDER BY si.price DESC";
+				break;
+			case 'year_asc':
+				$sql .= "
+					ORDER BY si.year ASC";
+				break;
+			case 'year_desc':
+				$sql .= "
+					ORDER BY si.year DESC";
+				break;
+			default:
+				$sql .= "
+					ORDER BY 1,2";
+		}
 
 		$results = $wpdb->get_results( $sql );
 		foreach( $results as $result )

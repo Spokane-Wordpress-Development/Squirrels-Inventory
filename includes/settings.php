@@ -2,21 +2,23 @@
 
 	<h1>Squirrels Inventory <?php echo __( 'Settings', 'squirrels_inventory'); ?></h1>
 
-	<h3><?php echo __( 'Shortcode', 'squirrels_inventory'); ?></h3>
-
-	<p><?php echo __( 'Add this shortcode to a page to insert the inventory search and display', 'squirrels_inventory'); ?>:</p>
+	<h3><?php echo __( 'Add this shortcode to a page to insert the inventory search and display', 'squirrels_inventory'); ?>:</h3>
 
 	[squirrels_inventory]
 
-	<p><?php echo __( 'You can also add filters to the shortcode to customize the display for makes', 'squirrels_inventory'); ?>:</p>
+	<h3><?php echo __( 'Turn off the search', 'squirrels_inventory'); ?>:</h3>
 
-	[squirrels_inventory make="Ford"]
+	[squirrels_inventory search="Off"]
 
-	<p><?php echo __( 'You can also add filters to the shortcode to customize the display for types', 'squirrels_inventory'); ?>:</p>
+	<h3><?php echo __( 'Turn off the inventory (only show search fields - good for sidebar placement)', 'squirrels_inventory'); ?>:</h3>
 
-	[squirrels_inventory type="Boat"]
+	[squirrels_inventory inventory="Off"]
 
-	<p><?php echo __( 'You can also add filters to the shortcode to show only featured items', 'squirrels_inventory'); ?>:</p>
+	<h3><?php echo __( 'Specify what page your inventory is on (useful if you want to direct to another page)', 'squirrels_inventory'); ?>:</h3>
+
+	[squirrels_inventory page="http://mydomain.com/my-page"]
+
+	<h3><?php echo __( 'You can also add a filter to the shortcode to show only featured items', 'squirrels_inventory'); ?>:</h3>
 
 	[squirrels_inventory featured="True"]
 

@@ -9,9 +9,6 @@
 $id = (is_numeric($this->data)) ? abs(round($this->data)) : 0;
 $auto = new \SquirrelsInventory\Auto($id);
 
-$parts = explode('?', $_SERVER['REQUEST_URI']);
-$back_page = $parts[0];
-
 ?>
 
 <?php if ($auto->getId() == 0 || $auto->getId() === NULL) { ?>
@@ -25,7 +22,7 @@ $back_page = $parts[0];
 
 	<div class="squirrels squirrels-auto">
 
-		<h3>
+		<h1 class="squirrels-title">
 			<?php echo $auto->getYear(); ?>
 			<?php echo $auto->getMake()->getTitle(); ?>
 			<?php echo $auto->getModel()->getTitle(); ?>
@@ -35,10 +32,10 @@ $back_page = $parts[0];
 			<?php } else { ?>
 				$<?php echo number_format($auto->getPrice(), 2); ?>
 			<?php } ?>
-		</h3>
+		</h1>
 
 		<p>
-			<a href="<?php echo $back_page; ?>">View All</a>
+			<a href="<?php echo $this->base_page; ?>">View All</a>
 		</p>
 		<p><?php echo $auto->getDescription(); ?></p>
 
