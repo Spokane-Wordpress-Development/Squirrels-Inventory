@@ -36,6 +36,12 @@ add_action( 'init', array( $squirrel, 'init' ) );
 /** Create any custom post types */
 add_action( 'init', array( $squirrel, 'createPostTypes' ) );
 
+/** Register Query Vars */
+add_filter( 'query_vars', array( $squirrel, 'queryVars') );
+
+/** Register shortcode */
+add_shortcode ( 'squirrels_inventory', array( $squirrel, 'shortCode') );
+
 /** Only run these hooks if logged into the admin screen */
 if ( is_admin() )
 {

@@ -31,6 +31,13 @@ class Auto {
 	private $imported_at;
 	private $updated_at;
 
+	public function __construct( $id=NULL )
+	{
+		$this
+			->setId($id)
+			->read();
+	}
+
 	/**
 	 * @return mixed
 	 */
@@ -269,7 +276,7 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setCreatedAt( $created_at ) {
-		$this->created_at = (is_numeric($created_at) || $created_at === NULL) ? $created_at : date( 'Y-m-d H:i:s', $created_at );
+		$this->created_at = (is_numeric($created_at) || $created_at === NULL) ? $created_at : strtotime( $created_at );
 
 		return $this;
 	}
@@ -289,7 +296,7 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setImportedAt( $imported_at ) {
-		$this->imported_at = (is_numeric($imported_at) || $imported_at === NULL) ? $imported_at : date( 'Y-m-d H:i:s', $imported_at );
+		$this->imported_at = (is_numeric($imported_at) || $imported_at === NULL) ? $imported_at : strtotime( $imported_at );
 
 		return $this;
 	}
@@ -309,7 +316,7 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setUpdatedAt( $updated_at ) {
-		$this->updated_at = (is_numeric($updated_at) || $updated_at === NULL) ? $updated_at : date( 'Y-m-d H:i:s', $updated_at );
+		$this->updated_at = (is_numeric($updated_at) || $updated_at === NULL) ? $updated_at : strtotime( $updated_at );
 
 		return $this;
 	}
@@ -407,6 +414,30 @@ class Auto {
 			->setImportedAt( $row->imported_at )
 			->setUpdatedAt( $row->updated_at );
 
+		if (isset($row->make))
+		{
+			$this->make = new Make;
+			$this->make
+				->setId($row->make_id)
+				->setTitle($row->make);
+		}
+
+		if (isset($row->model))
+		{
+			$this->model = new Model;
+			$this->model
+				->setId($row->model_id)
+				->setTitle($row->model);
+		}
+
+		if (isset($row->type))
+		{
+			$this->type = new AutoType;
+			$this->type
+				->setId($row->type_id)
+				->setTitle($row->type);
+		}
+
 		//TODO: Create AutoFeature and set features here
 		$this->features = json_decode($row->features);
 	}
@@ -458,7 +489,6 @@ class Auto {
 		}
 	}
 
-	//TODO: Not tested
 	public function read()
 	{
 		if ( $this->id !== NULL )
@@ -467,11 +497,20 @@ class Auto {
 
 			$sql = $wpdb->prepare("
 				SELECT
-					*
+					p_makes.post_title AS make,
+					p_models.post_title AS model,
+					p_types.post_title AS `type`,
+					si.*
 				FROM
-					`" . $wpdb->prefix . "squirrels_inventory`
+					" . $wpdb->prefix . "squirrels_inventory si
+					JOIN " . $wpdb->prefix . "posts p_makes
+						ON p_makes.id = si.make_id
+					JOIN " . $wpdb->prefix . "posts p_models
+						ON p_models.id = si.model_id
+					JOIN " . $wpdb->prefix . "posts p_types
+						ON p_types.id = si.type_id
 				WHERE
-					`id` = %d",
+					si.`id` = %d",
                 $this->id
 			);
 

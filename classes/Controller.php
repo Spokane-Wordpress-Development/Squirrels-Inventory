@@ -6,6 +6,11 @@ class Controller {
 
 	const VERSION = '1.0';
 
+	public $action = '';
+	public $data = '';
+	public $return = '';
+	public $attributes = array();
+
 	public function activate()
 	{
 		add_option( 'squirrels_inventory_version', self::VERSION );
@@ -161,6 +166,70 @@ class Controller {
 		{
 			session_start();
 		}
+	}
+
+	public function queryVars( $vars )
+	{
+		$vars[] = 'sq_action';
+		$vars[] = 'sq_data';
+		return $vars;
+	}
+
+	/**
+	 * @param $attributes
+	 *
+	 * @return string
+	 */
+	public function shortCode( $attributes )
+	{
+		$this->action = get_query_var('sq_action');
+		$this->data = get_query_var('sq_data');
+
+		$this->attributes = shortcode_atts( array(
+			'make' => '',
+			'type' => ''
+		), $attributes );
+
+		switch ( $this->action )
+		{
+			case 'auto':
+
+				return $this->showPublicAutoPage();
+				break;
+
+			default:
+
+				return $this->showPublicInventoryPage();
+				break;
+		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public function showPublicAutoPage()
+	{
+		return $this->return . $this->returnOutputFromPage('/includes/public_auto.php');
+	}
+
+	/**
+	 * @return string
+	 */
+	public function showPublicInventoryPage()
+	{
+		return $this->return . $this->returnOutputFromPage('/includes/public_inventory.php');
+	}
+
+	/**
+	 * @param $page
+	 *
+	 * @return string
+	 */
+	private function returnOutputFromPage($page)
+	{
+		ob_start();
+		include(dirname(__DIR__) . $page);
+		return ob_get_clean();
 	}
 
 	public function createPostTypes()
@@ -555,5 +624,38 @@ class Controller {
 		$auto->delete();
 
 		return $auto->getId() == NULL;
+	}
+
+	public function getCurrentInventory()
+	{
+		global $wpdb;
+		$autos = array();
+
+		$sql = "
+			SELECT
+				p_makes.post_title AS make,
+				p_models.post_title AS model,
+				p_types.post_title AS `type`,
+				si.*
+			FROM
+				" . $wpdb->prefix . "squirrels_inventory si
+				JOIN " . $wpdb->prefix . "posts p_makes
+					ON p_makes.id = si.make_id
+				JOIN " . $wpdb->prefix . "posts p_models
+					ON p_models.id = si.model_id
+				JOIN " . $wpdb->prefix . "posts p_types
+					ON p_types.id = si.type_id
+			WHERE
+				si.is_visible = 1";
+
+		$results = $wpdb->get_results( $sql );
+		foreach( $results as $result )
+		{
+			$auto = new Auto();
+			$auto->loadFromRow( $result );
+			$autos[$auto->getId()] = $auto;
+		}
+
+		return $autos;
 	}
 }
