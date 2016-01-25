@@ -54,6 +54,53 @@ if ( isset( $_GET[ 'action' ] ) )
 					</select>
 				</td>
 				<th>
+					<label for="squirrels_vehicle">Make/Model:</label>
+				</th>
+				<td>
+					<select id="squirrels_vehicle">
+						<?php $count = 0; $previous_make = ''; ?>
+						<?php foreach( $models as $model ) { ?>
+
+						<?php if( $model->getMake()->getTitle() != $previous_make ) { ?>
+
+						<?php if( $count != 0 ) { ?>
+							</optgroup>
+						<?php } ?>
+
+						<optgroup label="<?php echo $model->getMake()->getTitle(); ?>">
+
+							<?php $previous_make = $model->getMake()->getTitle(); ?>
+
+							<?php } ?>
+
+							<option value="<?php echo $model->getId(); ?>"><?php echo $model->getTitle(); ?></option>
+
+							<?php $count++; ?>
+
+							<?php } ?>
+
+						</optgroup>
+					</select>
+				</td>
+			</tr>
+
+			<tr>
+				<th>
+					<label for="squirrels_new_make">Create New Make:</label>
+				</th>
+				<td>
+					<input id="squirrels_new_make" />
+				</td>
+				<th>
+					<label for="squirrels_new_model">Create New Model:</label>
+				</th>
+				<td>
+					<input id="squirrels_new_model" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>
 					<label for="squirrels_is_visible">Visible:</label>
 				</th>
 				<td>
@@ -62,55 +109,17 @@ if ( isset( $_GET[ 'action' ] ) )
 						<option value="0">No</option>
 					</select>
 				</td>
-			</tr>
-			<tr>
 				<th>
-					<label for="squirrels_vehicle">Make/Model:</label>
+					<label for="squirrels_is_featured">Featured:</label>
 				</th>
 				<td>
-					<select id="squirrels_vehicle">
-						<?php $count = 0; $previous_make = ''; ?>
-						<?php foreach( $models as $model ) { ?>
-
-							<?php if( $model->getMake()->getTitle() != $previous_make ) { ?>
-
-								<?php if( $count != 0 ) { ?>
-									</optgroup>
-								<?php } ?>
-
-								<optgroup label="<?php echo $model->getMake()->getTitle(); ?>">
-
-								<?php $previous_make = $model->getMake()->getTitle(); ?>
-
-							<?php } ?>
-
-							<option value="<?php echo $model->getId(); ?>"><?php echo $model->getTitle(); ?></option>
-
-							<?php $count++; ?>
-
-						<?php } ?>
-
-						</optgroup>
+					<select id="squirrels_is_featured">
+						<option value="1">Yes</option>
+						<option value="0" selected>No</option>
 					</select>
 				</td>
-				<th>
-					<label for="squirrels_new_make">New Make:</label>
-				</th>
-				<td>
-					<input id="squirrels_new_make" />
-				</td>
 			</tr>
-			<tr>
-				<th colspan="2">
 
-				</th>
-				<th>
-					<label for="squirrels_new_model">New Model:</label>
-				</th>
-				<td>
-					<input id="squirrels_new_model" />
-				</td>
-			</tr>
 			<tr>
 				<th>
 					<label for="squirrels_inventory_number">Inventory Number:</label>

@@ -227,6 +227,7 @@ var features = features || {};
                 year: $('#squirrels_year').val(),
                 odometer_reading: $('#squirrels_odometer_reading').val(),
                 is_visible: $('#squirrels_is_visible').val(),
+                is_featured: $('#squirrels_is_featured').val(),
                 description: $('#squirrels_description').val(),
                 features: features
             },

@@ -62,6 +62,7 @@ class Controller {
 					`odometer_reading` INT(11) DEFAULT NULL,
 					`features` TEXT,
 					`is_visible` TINYINT(4) DEFAULT 0,
+					`is_featured` TINYINT(4) DEFAULT 0,
 					`description` TEXT,
 					`price` DECIMAL(11,4) DEFAULT NULL,
 					`created_at` DATETIME DEFAULT NULL,
@@ -575,6 +576,7 @@ class Controller {
 			->setOdometerReading( preg_replace('/\D/', '', $_REQUEST['odometer_reading']) )
 			->setDescription( $_REQUEST['description'] )
 			->setIsVisible( $_REQUEST['is_visible'] )
+			->setIsFeatured( $_REQUEST['is_featured'] )
 			->create();
 
 		return $auto->getId();
@@ -611,6 +613,8 @@ class Controller {
 			->setModelId( $model->getId() )
 			->setYear( $_REQUEST['year'] )
 			->setDescription( $_REQUEST['description'] )
+			->setIsVisible( $_REQUEST['is_visible'] )
+			->setIsFeatured( $_REQUEST['is_featured'] )
 			->setOdometerReading( preg_replace('/\D/', '', $_REQUEST['odometer_reading']) )
 			->update();
 

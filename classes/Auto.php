@@ -25,6 +25,7 @@ class Auto {
 	private $year;
 	private $odometer_reading;
 	private $is_visible = FALSE;
+	private $is_featured = FALSE;
 	private $description;
 	private $price;
 	private $created_at;
@@ -242,6 +243,26 @@ class Auto {
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function isFeatured() {
+		return $this->is_featured;
+	}
+
+	/**
+	 * @param boolean $is_featured
+	 *
+	 * @return Auto
+	 */
+	public function setIsFeatured( $is_featured ) {
+		$this->is_featured = ($is_featured == 1 || $is_featured === TRUE) ? TRUE : FALSE;
+
+		return $this;
+	}
+
+
+
+	/**
 	 * @return mixed
 	 */
 	public function getDescription()
@@ -410,6 +431,7 @@ class Auto {
 			->setDescription( $row->description )
 			->setPrice( $row->price )
 			->setIsVisible( $row->is_visible )
+			->setIsFeatured( $row->is_featured )
 			->setCreatedAt( $row->created_at )
 			->setImportedAt( $row->imported_at )
 			->setUpdatedAt( $row->updated_at );
@@ -465,6 +487,7 @@ class Auto {
 					'year' => $this->year,
 					'odometer_reading' => $this->odometer_reading,
 					'is_visible' => ( $this->is_visible ) ? 1 : 0,
+					'is_featured'  => ( $this->is_featured ) ? 1 : 0,
 					'description' => $this->description,
 					'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
@@ -474,6 +497,7 @@ class Auto {
 					'%d',
 					'%s',
 					'%s',
+					'%d',
 					'%d',
 					'%d',
 					'%d',
@@ -542,6 +566,7 @@ class Auto {
 					'year' => $this->year,
 					'odometer_reading' => $this->odometer_reading,
 					'is_visible' => ( $this->is_visible ) ? 1 : 0,
+					'is_featured' => ( $this->is_featured ) ? 1 : 0,
 					'description' => $this->description,
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 				),
@@ -553,6 +578,7 @@ class Auto {
 					'%d',
 					'%s',
 					'%s',
+					'%d',
 					'%d',
 					'%d',
 					'%d',
