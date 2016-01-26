@@ -104,7 +104,7 @@
 			$selected_order = $this->param('order', 'make');
 			$orders = array(
 				'price_asc' => 'Price (low to high)',
-				'price_desc' => 'Price (high to low',
+				'price_desc' => 'Price (high to low)',
 				'year_asc' => 'Year (low to high)',
 				'year_desc' => 'Year (high to low)',
 				'make' => 'Make'
