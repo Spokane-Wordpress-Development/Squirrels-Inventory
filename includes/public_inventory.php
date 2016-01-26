@@ -1,23 +1,3 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: Tony DeStefano
- * Date: 1/24/16
- * Time: 4:07 PM
- */
-
-/** @var \SquirrelsInventory\Auto[] $autos */
-$make = (isset($_GET['make'])) ? $_GET['make'] : '';
-$model = (isset($_GET['model'])) ? $_GET['model'] : '';
-$min = (isset($_GET['min'])) ? $_GET['min'] : '';
-$max = (isset($_GET['max'])) ? $_GET['max'] : '';
-$order = (isset($_GET['order'])) ? $_GET['order'] : '';
-$page = (isset($_GET['page'])) ? $_GET['page'] : '';
-$featured = $this->getAttribute('featured');
-$autos = $this->getCurrentInventory($make, $model, $min, $max, $order, $featured, $page);
-
-?>
-
 <?php if ($this->getAttribute('search') != 'off' && !$this->has_displayed_search) { ?>
 
 	<?php
@@ -150,17 +130,42 @@ $autos = $this->getCurrentInventory($make, $model, $min, $max, $order, $featured
 
 <?php } ?>
 
-<?php if (count($autos) == 0) { ?>
+<?php if ($this->getAttribute('inventory') != 'off' && !$this->has_displayed_inventory) { ?>
 
-	<p>
-		No inventory is currently available. Please check back later.
-	</p>
+	<?php
 
-<?php } else { ?>
+	$this->has_displayed_inventory = TRUE;
 
-	<?php if ($this->getAttribute('inventory') != 'off' && !$this->has_displayed_inventory) { ?>
+	$make = (isset($_GET['make'])) ? $_GET['make'] : '';
+	$model = (isset($_GET['model'])) ? $_GET['model'] : '';
+	$min = (isset($_GET['min'])) ? $_GET['min'] : '';
+	$max = (isset($_GET['max'])) ? $_GET['max'] : '';
+	$order = (isset($_GET['order'])) ? $_GET['order'] : '';
+	$page = (isset($_GET['page'])) ? $_GET['page'] : '';
+	$featured = $this->getAttribute('featured');
 
-		<?php $this->has_displayed_inventory = TRUE; ?>
+	/** @var \SquirrelsInventory\Auto[] $autos */
+	$autos = $this->getCurrentInventory($make, $model, $min, $max, $order, $featured, $page);
+
+	?>
+
+	<?php if (count($autos) == 0) { ?>
+
+		<?php if (strlen($make.$model.$min.$max.$order) > 0) { ?>
+
+			<p>
+				Your search returned no vehicles. Please try again.
+			</p>
+
+		<?php } else  { ?>
+
+			<p>
+				No inventory is currently available. Please check back later.
+			</p>
+
+		<?php } ?>
+
+	<?php } else { ?>
 
 		<div class="squirrels squirrels-inventory">
 

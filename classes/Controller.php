@@ -736,12 +736,12 @@ class Controller {
 		if (strlen($min) > 0 && is_numeric($min))
 		{
 			$sql .= "
-				AND si.price >= " . abs(round($min));
+				AND COALESCE(si.price, 0) >= " . abs(round($min));
 		}
 		if (strlen($max) > 0 && is_numeric($max))
 		{
 			$sql .= "
-				AND si.price <= " . abs(round($max));
+				AND COALESCE(si.price, 0) <= " . abs(round($max));
 		}
 		if ($featured == 'true')
 		{
@@ -752,11 +752,11 @@ class Controller {
 		{
 			case 'price_asc':
 				$sql .= "
-					ORDER BY si.price ASC";
+					ORDER BY COALESCE(si.price, 0) ASC";
 				break;
 			case 'price_desc':
 				$sql .= "
-					ORDER BY si.price DESC";
+					ORDER BY COALESCE(si.price, 0) DESC";
 				break;
 			case 'year_asc':
 				$sql .= "
