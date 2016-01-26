@@ -36,7 +36,8 @@ class AutoTable extends \WP_List_Table {
 			'price' => __( 'Price', 'squirrels_inventory' ),
 			'is_visible' => __( 'Visible', 'squirrels_inventory' ),
 			'is_featured' => __( 'Featured', 'squirrels_inventory' ),
-			'updated_at' => __( 'Last Updated', 'squirrels_inventory' )
+			'updated_at' => __( 'Last Updated', 'squirrels_inventory' ),
+			'edit' => ''
 		);
 	}
 
@@ -84,6 +85,8 @@ class AutoTable extends \WP_List_Table {
 				return number_format( $item->$column_name );
 			case 'price':
 				return '$' . number_format( $item->$column_name, 2 );
+			case 'edit':
+				return '<a href="?page=' . $_REQUEST['page'] . '&action=edit&id=' . $item->id . '" class="button-primary">' . __('Edit', 'squirrels_inventory') . '</a>';
 			default:
 				return print_r( $item, true ); //Show the whole array for troubleshooting purposes
 		}

@@ -259,36 +259,34 @@ var features = features || {};
 
     $( '#squirrels-inventory-delete' ).click( function() {
 
-        $.ajax({
-            url: ajaxurl,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-                action: 'squirrels_inventory_delete',
-                id: url_variables.id
-            },
-            success: function(r)
-            {
-                if(r.success > 0)
-                {
-                    location.href = '?page=squirrels_inventory';
-                }
-                else
-                {
-                    console.log(r);
+        var b = confirm('Are you sure you want to delete this item?');
+        if (b) {
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    action: 'squirrels_inventory_delete',
+                    id: url_variables.id
+                },
+                success: function (r) {
+                    if(r != '0') {
+                        location.href = '?page=squirrels_inventory';
+                    }
+                    else {
+                        console.log(r);
+                        alert('There\'s been an error.');
+                    }
+                },
+                error: function (x, y, z) {
+                    console.log(x.responseText);
+                    console.log(x);
+                    console.log(y);
+                    console.log(z);
                     alert('There\'s been an error.');
                 }
-            },
-            error: function(x, y, z)
-            {
-                console.log(x.responseText);
-                console.log(x);
-                console.log(y);
-                console.log(z);
-                alert('There\'s been an error.');
-            }
-        });
-
+            });
+        }
     } );
 
 

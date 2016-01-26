@@ -586,10 +586,13 @@ class Auto {
 			{
 				$this->loadFromRow( $row );
 			}
+			else
+			{
+				$this->id = NULL;
+			}
 		}
 	}
 
-	//TODO: Not tested
 	public function update()
 	{
 		global $wpdb;
@@ -639,12 +642,9 @@ class Auto {
 					'%d'
 				)
 			);
-
-			$this->id = $wpdb->insert_id;
 		}
 	}
 
-	//TODO: Not tested
 	public function delete()
 	{
 		global $wpdb;
