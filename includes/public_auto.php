@@ -22,7 +22,7 @@ $auto = new \SquirrelsInventory\Auto($id);
 
 	<div class="squirrels squirrels-auto">
 
-		<h1 class="squirrels-title">
+		<h3 class="squirrels-title">
 			<?php echo $auto->getYear(); ?>
 			<?php echo $auto->getMake()->getTitle(); ?>
 			<?php echo $auto->getModel()->getTitle(); ?>
@@ -32,7 +32,7 @@ $auto = new \SquirrelsInventory\Auto($id);
 			<?php } else { ?>
 				$<?php echo number_format($auto->getPrice(), 2); ?>
 			<?php } ?>
-		</h1>
+		</h3>
 
 		<p>
 			<a href="<?php echo $this->base_page; ?>">View All</a>

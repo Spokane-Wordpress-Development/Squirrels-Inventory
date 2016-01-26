@@ -175,11 +175,13 @@
 						<img class="sq-thumb" src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
 					</div>
 					<div class="col-md-4">
-						<a href="<?php echo (strlen($this->getAttribute('page'))) ? $this->getAttribute('page') : $this->base_page; ?>?sq_action=auto&sq_data=<?php echo $auto->getId(); ?>">
-							<?php echo $auto->getYear(); ?>
-							<?php echo $auto->getMake()->getTitle(); ?>
-							<?php echo $auto->getModel()->getTitle(); ?>
-						</a>
+						<h3 class="squirrels-title">
+							<a href="<?php echo (strlen($this->getAttribute('page'))) ? $this->getAttribute('page') : $this->base_page; ?>?sq_action=auto&sq_data=<?php echo $auto->getId(); ?>">
+								<?php echo $auto->getYear(); ?>
+								<?php echo $auto->getMake()->getTitle(); ?>
+								<?php echo $auto->getModel()->getTitle(); ?>
+							</a>
+						</h3>
 						<?php if (strlen($auto->getVin()) > 0) { ?>
 							<br>VIN: <?php echo $auto->getVin(); ?>
 						<?php } ?>
