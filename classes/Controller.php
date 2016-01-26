@@ -219,7 +219,15 @@ class Controller {
 		{
 			case 'auto':
 
-				return $this->showPublicAutoPage();
+				if ($this->getAttribute('inventory') == 'off')
+				{
+					return $this->showPublicInventoryPage();
+				}
+				else
+				{
+					return $this->showPublicAutoPage();
+				}
+
 				break;
 
 			default:
@@ -505,16 +513,19 @@ class Controller {
 							p.post_type = '" . Make::CUSTOM_POST_TYPE . "'
 							AND pm.meta_key = 'make_id'
 					) x
-					ON x.post_id = wp_posts.id";
+					ON x.post_id = " . $wpdb->prefix . "posts.id";
 			}
 
 			return $join;
 		}, 10, 2 );
 
 		add_filter( 'posts_orderby', function( $orderby, $query ) {
+
+			global $wpdb;
+
 			if( $query->query_vars['post_type'] == Model::CUSTOM_POST_TYPE )
 			{
-				$orderby = 'x.post_title ' . $query->query_vars[ 'order' ] . ', wp_posts.post_title ' . $query->query_vars[ 'order' ];
+				$orderby = 'x.post_title ' . $query->query_vars[ 'order' ] . ', ' . $wpdb->prefix . 'posts.post_title ' . $query->query_vars[ 'order' ];
 			}
 
 			return $orderby;
