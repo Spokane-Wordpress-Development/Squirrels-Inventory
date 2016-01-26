@@ -637,7 +637,7 @@ class Controller {
 
 		$auto = new Auto();
 		$auto
-			->setPrice( $_REQUEST['price'] )
+			->setPrice( preg_replace('/[^0-9\.]/', '', $_REQUEST['price']) )
 			->setTypeId( $_REQUEST['type_id'] )
 			->setInventoryNumber( $_REQUEST['inventory_number'] )
 			->setVin( $_REQUEST['vin'] )
