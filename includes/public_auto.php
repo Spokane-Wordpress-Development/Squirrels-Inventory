@@ -61,24 +61,21 @@ $auto = new \SquirrelsInventory\Auto($id);
 			</div>
 			<div class="col-md-6">
 				<div class="row">
-					<div class="col-md-6">
-						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
-					</div>
-					<div class="col-md-6">
-						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
-					</div>
-					<div class="col-md-6">
-						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
-					</div>
-					<div class="col-md-6">
-						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
-					</div>
-					<div class="col-md-6">
-						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
-					</div>
-					<div class="col-md-6">
-						<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
-					</div>
+					<?php if ($auto->getImageCount() == 0) { ?>
+						<?php for ($x=1; $x<=6; $x++) { ?>
+							<div class="col-md-6">
+								<img src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+							</div>
+						<?php } ?>
+					<?php } else { ?>
+						<?php foreach ($auto->getImages() as $image) { ?>
+							<div class="col-md-6">
+								<a href="<?php echo $image->getUrl(); ?>" class="thickbox">
+									<img src="<?php echo $image->getUrl(); ?>">
+								</a>
+							</div>
+						<?php } ?>
+					<?php } ?>
 				</div>
 
 			</div>

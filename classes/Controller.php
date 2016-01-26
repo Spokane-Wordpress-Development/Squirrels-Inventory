@@ -73,7 +73,30 @@ class Controller {
 					`created_at` DATETIME DEFAULT NULL,
 					`imported_at` DATETIME DEFAULT NULL,
 					`updated_at` DATETIME DEFAULT NULL,
-					PRIMARY KEY (`id`)
+					PRIMARY KEY (`id`),
+					KEY `type_id` (`type_id`),
+					KEY `make_id` (`make_id`),
+					KEY `model_id` (`model_id`)
+				)";
+			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
+			dbDelta( $sql );
+		}
+
+		/** SQUIRRELS_IMAGES table */
+		$table = $wpdb->prefix . "squirrels_images";
+		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
+			$sql = "
+				CREATE TABLE `" . $table . "`
+				(
+					`id` INT(11) NOT NULL AUTO_INCREMENT,
+					`inventory_id` INT(11) DEFAULT NULL,
+					`media_id` INT(11) DEFAULT NULL,
+					`url` VARCHAR(250) DEFAULT NULL,
+					`is_default` TINYINT(4) DEFAULT 0,
+					`created_at` DATETIME DEFAULT NULL,
+					`updated_at` DATETIME DEFAULT NULL,
+					PRIMARY KEY (`id`),
+					KEY `inventory_id` (`inventory_id`)
 				)";
 			$sql .= $charset_collate . ";"; // new line to avoid PHP Storm syntax error
 			dbDelta( $sql );
@@ -178,8 +201,8 @@ class Controller {
 		$parts = explode('?', $_SERVER['REQUEST_URI']);
 		$this->base_page = $parts[0];
 
+		add_thickbox();
 		wp_enqueue_script( 'squirrels-inventory-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/squirrels.js', array( 'jquery' ), time(), TRUE );
-
 		wp_enqueue_style( 'squirrels-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), time() );
 		wp_enqueue_style( 'squirrels-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/squirrels_inventory.css', array(), time() );
 	}
@@ -537,6 +560,8 @@ class Controller {
 	 */
 	public function enqueueAdminScripts()
 	{
+		wp_enqueue_media();
+		wp_enqueue_style( 'squirrels-admin-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/admin.css', array(), time() );
 		wp_enqueue_script( 'squirrels-admin', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin.js', array( 'jquery' ), time(), TRUE );
 		wp_localize_script( 'squirrels-admin', 'url_variables', $_GET );
 		wp_enqueue_style( 'squirrels-admin-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css' );
@@ -652,6 +677,25 @@ class Controller {
 			->setInterior( $_REQUEST['interior'] )
 			->create();
 
+		$images = $_REQUEST['images'];
+		if (!is_array($images))
+		{
+			$images = json_decode($images, TRUE);
+		}
+
+		foreach ($images as $i)
+		{
+			$image = new Image;
+			$image
+				->setInventoryId($auto->getId())
+				->setMediaId($i['id'])
+				->setUrl($i['url'])
+				->setIsDefault($i['default'])
+				->create();
+
+			$auto->addImage( $image );
+		}
+
 		return $auto->getId();
 	}
 
@@ -705,6 +749,8 @@ class Controller {
 	public function getCurrentInventory($make=NULL, $model=NULL, $min=NULL, $max=NULL, $order=NULL, $featured=NULL, $page=NULL)
 	{
 		global $wpdb;
+
+		/** @var Auto[] $autos */
 		$autos = array();
 
 		$sql = "
@@ -712,6 +758,12 @@ class Controller {
 				p_makes.post_title AS make,
 				p_models.post_title AS model,
 				p_types.post_title AS `type`,
+				im.id AS image_id,
+				im.media_id,
+				im.url,
+				im.is_default,
+				im.created_at AS image_created_at,
+				im.updated_at AS image_updated_at,
 				si.*
 			FROM
 				" . $wpdb->prefix . "squirrels_inventory si
@@ -721,6 +773,8 @@ class Controller {
 					ON p_models.id = si.model_id
 				JOIN " . $wpdb->prefix . "posts p_types
 					ON p_types.id = si.type_id
+				LEFT JOIN " . $wpdb->prefix . "squirrels_images im
+					ON si.id = im.inventory_id
 			WHERE
 				si.is_visible = 1";
 		if (strlen($make) > 0 && is_numeric($make))
@@ -770,13 +824,30 @@ class Controller {
 				$sql .= "
 					ORDER BY 1,2";
 		}
+		$sql .= ",im.is_default DESC, im.id";
 
 		$results = $wpdb->get_results( $sql );
 		foreach( $results as $result )
 		{
-			$auto = new Auto();
-			$auto->loadFromRow( $result );
-			$autos[$auto->getId()] = $auto;
+			if (!array_key_exists($result->id, $autos)) {
+				$auto = new Auto();
+				$auto->loadFromRow( $result );
+				$autos[ $auto->getId() ] = $auto;
+			}
+
+			if ($result->image_id !== NULL) {
+				$image = new Image;
+				$image
+					->setId($result->image_id)
+					->setInventoryId($result->id)
+					->setMediaId($result->media_id)
+					->setUrl($result->url)
+					->setIsDefault($result->is_default)
+					->setCreatedAt($result->image_created_at)
+					->setUpdatedAt($result->image_updated_at);
+
+				$autos[$result->id]->addImage($image);
+			}
 		}
 
 		return $autos;

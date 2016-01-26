@@ -172,7 +172,14 @@
 			<?php foreach ($autos as $auto) { ?>
 				<div class="row">
 					<div class="col-md-4">
-						<img class="sq-thumb" src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+						<?php if ($auto->getImageCount() == 0) { ?>
+							<img class="sq-thumb" src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
+						<?php } else { ?>
+							<?php foreach ($auto->getImages() as $image) { ?>
+								<img class="sq-thumb" src="<?php echo $image->getUrl(); ?>">
+								<?php break; ?>
+							<?php } ?>
+						<?php } ?>
 					</div>
 					<div class="col-md-4">
 						<h3 class="squirrels-title">

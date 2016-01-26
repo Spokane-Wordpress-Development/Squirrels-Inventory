@@ -1,0 +1,29 @@
+#squirrels-images-admin div {
+    border: 1px solid #CCC;
+    text-align: center;
+    display: inline-block;
+    padding: 5px;
+    margin: 5px;
+    background: white;
+}
+
+#squirrels-images-admin div.default {
+    background: yellow;
+}
+
+#squirrels-images-admin img {
+    max-width: 250px;
+    border: 1px solid #000;
+    background: white;
+}
+
+#squirrels-images-admin span.remove {
+    text-decoration: underline;
+    cursor: pointer;
+    color: red;
+}
+
+#squirrels-images-admin span.default {
+    text-decoration: underline;
+    cursor: pointer;
+}

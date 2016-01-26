@@ -23,6 +23,7 @@ require_once ( 'classes/Make.php' );
 require_once ( 'classes/Model.php' );
 require_once ( 'classes/FeatureTable.php' );
 require_once ( 'classes/AutoTable.php' );
+require_once ( 'classes/Image.php' );
 
 /** controller object */
 $squirrel = new \SquirrelsInventory\Controller;

@@ -16,6 +16,9 @@ class Auto {
 	/** @var Model $model */
 	private $model;
 
+	/** @var Image[] $images */
+	private $images;
+
 	private $id = 0;
 	private $inventory_number;
 	private $vin;
@@ -34,11 +37,26 @@ class Auto {
 	private $imported_at;
 	private $updated_at;
 
+	/**
+	 * Auto constructor.
+	 *
+	 * @param null $id
+	 */
 	public function __construct( $id=NULL )
 	{
 		$this
 			->setId($id)
 			->read();
+	}
+
+	/**
+	 *
+	 */
+	public function loadImages()
+	{
+		if ($this->id !== NULL) {
+			$this->setImages( Image::getInventoryImages( $this->id ) );
+		}
 	}
 
 	/**
@@ -57,6 +75,41 @@ class Auto {
 		$this->id = $id;
 
 		return $this;
+	}
+
+	/**
+	 * @return Image[]
+	 */
+	public function getImages() {
+		return $this->images;
+	}
+
+	/**
+	 * @param Image[] $images
+	 *
+	 * @return Auto
+	 */
+	public function setImages( $images ) {
+		$this->images = $images;
+
+		return $this;
+	}
+
+	/**
+	 * @param Image $image
+	 */
+	public function addImage( Image $image ) {
+		if ($this->images === NULL) {
+			$this->images = array();
+		}
+		$this->images[] = $image;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getImageCount() {
+		return ($this->images === NULL) ? 0 : count($this->images);
 	}
 
 	/**
@@ -504,7 +557,6 @@ class Auto {
 		$this->features = json_decode($row->features);
 	}
 
-	//TODO: Not tested
 	public function create()
 	{
 		global $wpdb;
@@ -585,6 +637,7 @@ class Auto {
 			if ( $row = $wpdb->get_row( $sql ) )
 			{
 				$this->loadFromRow( $row );
+				$this->loadImages();
 			}
 			else
 			{

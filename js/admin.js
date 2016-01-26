@@ -1,5 +1,6 @@
 var url_variables = url_variables || {};
 var features = features || {};
+var file_frame;
 
 (function($){
 
@@ -231,7 +232,8 @@ var features = features || {};
                 description: $('#squirrels_description').val(),
                 exterior: $('#squirrels_exterior').val(),
                 interior: $('#squirrels_interior').val(),
-                features: features
+                features: features,
+                images: images
             },
             success: function(r)
             {
@@ -289,5 +291,88 @@ var features = features || {};
         }
     } );
 
+    $('#squirrels-upload-images').click(function(e){
+
+        e.preventDefault();
+
+        // If the media frame already exists, reopen it.
+        if ( file_frame ) {
+            file_frame.open();
+            return;
+        }
+
+        // Create the media frame.
+        file_frame = wp.media.frames.file_frame = wp.media({
+            title: 'Upload Images',
+            button: {
+                text: 'Save'
+            },
+            multiple: true  // Set to true to allow multiple files to be selected
+        });
+
+        // When an image is selected, run a callback.
+        file_frame.on( 'select', function() {
+
+            var selection = file_frame.state().get('selection');
+
+            selection.map( function( attachment ) {
+
+                attachment = attachment.toJSON();
+
+                var add_image = true;
+                for (var i=0; i<images.length; i++){
+                    if (attachment.id == images[i].id){
+                        add_image = false;
+                        break;
+                    }
+                }
+
+                if (add_image) {
+
+                    $('#squirrels-images-admin').prepend('<div class="image-' + attachment.id + '"><img src="' + attachment.url + '" width="250"><br><span class="remove" data-id="' + attachment.id + '">remove</span> | <span class="default" data-id="' + attachment.id + '">make default</span></div>');
+                    images.push({
+                        id: attachment.id,
+                        url: attachment.url,
+                        default: 0
+                    });
+                }
+            });
+        });
+
+        // Finally, open the modal
+        file_frame.open();
+    });
+
+    var container = $('#squirrels-images-admin');
+
+    container.on('click', 'span.remove', function(){
+        var id = $(this).data('id');
+        $('#squirrels-images-admin').find('.image-'+id).each(function(){
+            $(this).remove();
+        });
+        var new_images = [];
+        for (var i=0; i<images.length; i++){
+            if (images[i].id != id) {
+                new_images.push(images[i]);
+            }
+        }
+        images = new_images;
+    });
+
+    container.on('click', 'span.default', function(){
+        var id = $(this).data('id');
+        var container = $('#squirrels-images-admin');
+        container.find('div').each(function(){
+            $(this).removeClass('default');
+        });
+        container.find('.image-'+id).addClass('default');
+        for (var i=0; i<images.length; i++){
+            if (images[i].id != id) {
+                images[i].default = 1;
+            } else {
+                images[i].default = 0;
+            }
+        }
+    });
 
 })(jQuery);

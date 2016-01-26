@@ -200,8 +200,19 @@ if ( isset( $_GET[ 'action' ] ) )
 		</table>
 		</form>
 
+		<p>
+			<input id="squirrels-upload-images" class="button-primary" value="Upload Images" type="button" />
+		</p>
+
+		<div id="squirrels-images-admin">
+
+
+
+		</div>
+
 		<script>
 			var features = <?php echo json_encode($features); ?>;
+			var images = [];
 		</script>
 
 	<?php } elseif( $action == 'edit' ) { ?>
