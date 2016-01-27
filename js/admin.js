@@ -204,14 +204,18 @@ var file_frame;
     });
 
     $('#submit-new-feature').click(function(){
-        var title = $('#new-feature-title').val();
-        var value = $('#new-feature-value').val();
+        var title_field = $('#new-feature-title');
+        var value_field = $('#new-feature-value');
+        var title = title_field.val();
+        var value = value_field.val();
         if (title.length == 0) {
             alert('Please enter a title');
         } else if (value.length == 0) {
             alert('Please enter a value');
         } else {
             addFeature(0, title, value);
+            title_field.val('');
+            value_field.val('');
         }
     });
 
