@@ -268,6 +268,8 @@ if ( isset( $_GET[ 'action' ] ) )
 
 		</script>
 
+		<p><em>(Hint: The "add" button is at the top!)</em></p>
+
 	<?php } elseif( $action == 'edit' ) { ?>
 
 		<?php
@@ -497,6 +499,8 @@ if ( isset( $_GET[ 'action' ] ) )
 					<?php } ?>
 				<?php } ?>
 			</script>
+
+			<p><em>(Hint: The "update" and "delete" buttons are at the top!)</em></p>
 
 		<?php } ?>
 
