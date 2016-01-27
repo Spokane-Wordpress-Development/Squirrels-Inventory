@@ -22,22 +22,28 @@ $auto = new \SquirrelsInventory\Auto($id);
 
 	<div class="squirrels squirrels-auto">
 
-		<h3 class="squirrels-title">
-			<?php echo $auto->getYear(); ?>
-			<?php echo $auto->getMake()->getTitle(); ?>
-			<?php echo $auto->getModel()->getTitle(); ?>
-			-
-			<?php if ($auto->getPrice() === NULL || $auto->getPrice() == 0) { ?>
-				Call for Price
-			<?php } else { ?>
-				$<?php echo number_format($auto->getPrice(), 2); ?>
-			<?php } ?>
-		</h3>
+		<div class="row">
+			<div class="col-md-12">
 
-		<p>
-			<a href="<?php echo $this->base_page; ?>">View All</a>
-		</p>
-		<p><?php echo $auto->getDescription(); ?></p>
+				<h3 class="squirrels-title">
+					<?php echo $auto->getYear(); ?>
+					<?php echo $auto->getMake()->getTitle(); ?>
+					<?php echo $auto->getModel()->getTitle(); ?>
+					-
+					<?php if ($auto->getPrice() === NULL || $auto->getPrice() == 0) { ?>
+						Call for Price
+					<?php } else { ?>
+						$<?php echo number_format($auto->getPrice(), 2); ?>
+					<?php } ?>
+				</h3>
+
+				<p>
+					<a href="<?php echo $this->base_page; ?>">View All</a>
+				</p>
+				<p><?php echo $auto->getDescription(); ?></p>
+
+			</div>
+		</div>
 
 		<div class="row">
 			<div class="col-md-6">
