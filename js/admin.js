@@ -331,9 +331,10 @@ var file_frame;
 
                     $('#squirrels-images-admin').prepend('<div class="image-' + attachment.id + '"><img src="' + attachment.url + '" width="250"><br><span class="remove" data-id="' + attachment.id + '">remove</span> | <span class="default" data-id="' + attachment.id + '">make default</span></div>');
                     images.push({
-                        id: attachment.id,
+                        id: 0,
+                        media_id: attachment.id,
                         url: attachment.url,
-                        default: 0
+                        def: 0
                     });
                 }
             });
@@ -352,7 +353,7 @@ var file_frame;
         });
         var new_images = [];
         for (var i=0; i<images.length; i++){
-            if (images[i].id != id) {
+            if (images[i].media_id != id) {
                 new_images.push(images[i]);
             }
         }
@@ -367,10 +368,10 @@ var file_frame;
         });
         container.find('.image-'+id).addClass('default');
         for (var i=0; i<images.length; i++){
-            if (images[i].id != id) {
-                images[i].default = 1;
+            if (images[i].media_id == id) {
+                images[i].def = 1;
             } else {
-                images[i].default = 0;
+                images[i].def = 0;
             }
         }
     });

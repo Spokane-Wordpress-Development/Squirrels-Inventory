@@ -99,10 +99,15 @@ class Auto {
 	 * @param Image $image
 	 */
 	public function addImage( Image $image ) {
-		if ($this->images === NULL) {
-			$this->images = array();
+		$this->setImage( $image->getId(), $image );
+	}
+
+	public function deleteImage( $index ) {
+		if ($this->images !== NULL && array_key_exists((int)$index, $this->images)) {
+			$image = $this->images[ $index ];
+			$image->delete();
+			unset( $this->images[ $index ] );
 		}
-		$this->images[] = $image;
 	}
 
 	/**
@@ -110,6 +115,30 @@ class Auto {
 	 */
 	public function getImageCount() {
 		return ($this->images === NULL) ? 0 : count($this->images);
+	}
+
+	/**
+	 * @param $index
+	 *
+	 * @return null|Image
+	 */
+	public function getImage( $index ) {
+		if (array_key_exists($index, $this->images)) {
+			return $this->images[$index];
+		}
+
+		return NULL;
+	}
+
+	/**
+	 * @param $index
+	 * @param Image $image
+	 */
+	public function setImage( $index, Image $image ) {
+		if ($this->images === NULL) {
+			$this->images = array();
+		}
+		$this->images[$index] = $image;
 	}
 
 	/**
@@ -611,10 +640,10 @@ class Auto {
 
 	public function read()
 	{
+		global $wpdb;
+
 		if ( $this->id !== NULL )
 		{
-			global $wpdb;
-
 			$sql = $wpdb->prepare("
 				SELECT
 					p_makes.post_title AS make,
@@ -702,14 +731,29 @@ class Auto {
 	{
 		global $wpdb;
 
-		$wpdb->delete(
-			$wpdb->prefix . 'squirrels_inventory',
-			array(
-				'id' => $this->id
-			),
-			array(
-				'%d'
-			)
-		);
+		if ($this->id !== NULL) {
+
+			$wpdb->delete(
+				$wpdb->prefix . 'squirrels_inventory',
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%d'
+				)
+			);
+
+			$wpdb->delete(
+				$wpdb->prefix . 'squirrels_images',
+				array(
+					'inventory_id' => $this->id
+				),
+				array(
+					'%d'
+				)
+			);
+
+			$this->id = NULL;
+		}
 	}
 }

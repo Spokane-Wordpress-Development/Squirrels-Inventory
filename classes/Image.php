@@ -18,6 +18,45 @@ class Image {
 	private $created_at;
 	private $updated_at;
 
+	/**
+	 * Image constructor.
+	 *
+	 * @param null $id
+	 */
+	public function __construct( $id=NULL )
+	{
+		$this
+			->setId($id)
+			->read();
+	}
+
+	public function read()
+	{
+		global $wpdb;
+
+		if ( $this->id !== NULL )
+		{
+			$sql = $wpdb->prepare("
+				SELECT
+					*
+				FROM
+					" . $wpdb->prefix . "squirrels_images
+				WHERE
+					`id` = %d",
+				$this->id
+			);
+
+			if ( $row = $wpdb->get_row( $sql ) )
+			{
+				$this->loadFromRow( $row );
+			}
+			else
+			{
+				$this->id = NULL;
+			}
+		}
+	}
+
 	public function create()
 	{
 		global $wpdb;
@@ -49,6 +88,60 @@ class Image {
 			);
 
 			$this->id = $wpdb->insert_id;
+		}
+	}
+
+	public function update()
+	{
+		global $wpdb;
+
+		if ( $this->id !== NULL )
+		{
+			$this->setUpdatedAt( time() );
+
+			$wpdb->update(
+				$wpdb->prefix . 'squirrels_images',
+				array(
+					'inventory_id' => $this->inventory_id,
+					'media_id' => $this->media_id,
+					'url' => $this->url,
+					'is_default' => ( $this->is_default ) ? 1 : 0,
+					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
+				),
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%d',
+					'%d',
+					'%s',
+					'%d',
+					'%s'
+				),
+				array(
+					'%d'
+				)
+			);
+		}
+	}
+
+	public function delete()
+	{
+		global $wpdb;
+
+		if ($this->id !== NULL) {
+
+			$wpdb->delete(
+				$wpdb->prefix . 'squirrels_images',
+				array(
+					'id' => $this->id
+				),
+				array(
+					'%d'
+				)
+			);
+
+			$this->id = NULL;
 		}
 	}
 

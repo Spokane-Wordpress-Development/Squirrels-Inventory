@@ -688,9 +688,9 @@ class Controller {
 			$image = new Image;
 			$image
 				->setInventoryId($auto->getId())
-				->setMediaId($i['id'])
+				->setMediaId($i['media_id'])
 				->setUrl($i['url'])
-				->setIsDefault($i['default'])
+				->setIsDefault($i['def'])
 				->create();
 
 			$auto->addImage( $image );
@@ -734,6 +734,64 @@ class Controller {
 			->setIsFeatured( $_REQUEST['is_featured'] )
 			->setOdometerReading( preg_replace('/\D/', '', $_REQUEST['odometer_reading']) )
 			->update();
+
+		$images = $_REQUEST['images'];
+		if (!is_array($images))
+		{
+			$images = json_decode($images, TRUE);
+		}
+
+		/** Remove deleted images */
+		if ($auto->getImageCount() > 0)
+		{
+			foreach ($auto->getImages() as $image)
+			{
+				$delete_me = TRUE;
+				foreach ($images as $i)
+				{
+					if ($image->getId() == $i['id'])
+					{
+						$delete_me = FALSE;
+						break;
+					}
+				}
+
+				if ($delete_me)
+				{
+					$auto->deleteImage( $image->getId() );
+				}
+			}
+		}
+
+		foreach ($images as $i)
+		{
+			/** Add new images */
+			if ($i['id'] == 0)
+			{
+				$image = new Image;
+				$image
+					->setInventoryId( $auto->getId() )
+					->setMediaId( $i['media_id'] )
+					->setUrl( $i['url'] )
+					->setIsDefault( $i['def'] )
+					->create();
+
+				$auto->addImage( $image );
+			}
+			/** Update existing images */
+			else
+			{
+				$image = new Image( $i['id'] );
+				$image
+					->setInventoryId( $auto->getId() )
+					->setMediaId( $i['media_id'] )
+					->setUrl( $i['url'] )
+					->setIsDefault( $i['def'] )
+					->update();
+
+				$auto->setImage( $i['id'], $image );
+			}
+		}
 
 		return $auto->getId();
 	}

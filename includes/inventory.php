@@ -204,11 +204,7 @@ if ( isset( $_GET[ 'action' ] ) )
 			<input id="squirrels-upload-images" class="button-primary" value="Upload Images" type="button" />
 		</p>
 
-		<div id="squirrels-images-admin">
-
-
-
-		</div>
+		<div id="squirrels-images-admin"></div>
 
 		<script>
 			var features = <?php echo json_encode($features); ?>;
@@ -414,8 +410,35 @@ if ( isset( $_GET[ 'action' ] ) )
 			</table>
 			</form>
 
+			<p>
+				<input id="squirrels-upload-images" class="button-primary" value="Upload Images" type="button" />
+			</p>
+
+			<div id="squirrels-images-admin">
+				<?php if ($auto->getImageCount() > 0) { ?>
+					<?php foreach ($auto->getImages() as $image) { ?>
+						<div class="image-<?php echo $image->getMediaId(); ?><?php if ($image->isDefault()) {?> default<?php } ?>">
+							<img src="<?php echo $image->getUrl(); ?>" width="250"><br>
+							<span class="remove" data-id="<?php echo $image->getMediaId(); ?>">remove</span>
+							|
+							<span class="default" data-id="<?php echo $image->getMediaId(); ?>">make default</span></div>
+					<?php } ?>
+				<?php } ?>
+			</div>
+
 			<script>
 				var features = <?php echo json_encode($features); ?>;
+				var images = [];
+				<?php if ($auto->getImageCount() > 0) { ?>
+					<?php foreach ($auto->getImages() as $image) { ?>
+						images.push({
+							id: <?php echo $image->getId(); ?>,
+							media_id: <?php echo $image->getMediaId(); ?>,
+							url: '<?php echo $image->getUrl(); ?>',
+							def: <?php echo ($image->isDefault()) ? 1 : 0; ?>
+						});
+					<?php } ?>
+				<?php } ?>
 			</script>
 
 		<?php } ?>
