@@ -41,23 +41,38 @@ $auto = new \SquirrelsInventory\Auto($id);
 
 		<div class="row">
 			<div class="col-md-6">
-				<ul>
+				<table>
 					<?php if (strlen($auto->getVin()) > 0) { ?>
-						<li>VIN: <?php echo $auto->getVin(); ?></li>
+						<tr>
+							<th>VIN:</th>
+							<td><?php echo $auto->getVin(); ?></td>
+						</tr>
 					<?php } ?>
 					<?php if (strlen($auto->getOdometerReading()) > 0) { ?>
-						<li>ODO: <?php echo number_format($auto->getOdometerReading()); ?></li>
+						<tr>
+							<th>Mileage:</th>
+							<td><?php echo number_format($auto->getOdometerReading()); ?></td>
+						</tr>
 					<?php } ?>
 					<?php if (strlen($auto->getExterior()) > 0) { ?>
-						<li>Exterior: <?php echo $auto->getExterior(); ?></li>
+						<tr>
+							<th>Exterior:</th>
+							<td><?php echo $auto->getExterior(); ?></td>
+						</tr>
 					<?php } ?>
 					<?php if (strlen($auto->getInterior()) > 0) { ?>
-						<li>Interior: <?php echo $auto->getInterior(); ?></li>
+						<tr>
+							<th>Interior:</th>
+							<td><?php echo $auto->getInterior(); ?></td>
+						</tr>
 					<?php } ?>
-					<?php for ($x=1; $x<=10; $x++) { ?>
-						<li>Sample Feature <?php echo $x; ?></li>
+					<?php foreach($auto->getFeatures() as $feature) { ?>
+						<tr>
+							<th><?php echo $feature->getFeatureTitle(); ?></th>
+							<td><?php echo $feature->getValue(); ?></td>
+						</tr>
 					<?php } ?>
-				</ul>
+				</table>
 			</div>
 			<div class="col-md-6">
 				<div class="row">

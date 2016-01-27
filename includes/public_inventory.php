@@ -193,7 +193,7 @@
 							<br>VIN: <?php echo $auto->getVin(); ?>
 						<?php } ?>
 						<?php if (strlen($auto->getOdometerReading()) > 0) { ?>
-							<br>ODO: <?php echo number_format($auto->getOdometerReading()); ?>
+							<br>Mileage: <?php echo number_format($auto->getOdometerReading()); ?>
 						<?php } ?>
 					</div>
 					<div class="col-md-4">

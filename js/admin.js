@@ -174,47 +174,67 @@ var file_frame;
 /**********************************************************************************************************************/
 //Add, Edit, Delete Auto Page
 
-    $( '.squirrels-feature' ).change( function() {
+    $( '#pre-defined-feature-title' ).change( function() {
 
-        var feature = features[ $(this).val() ];
+        var id = $(this).val();
+        var value_select = $('#pre-defined-feature-value');
+        value_select.empty();
 
-        var options = feature.options;
-
-        var html = '';
-
-        if(feature.is_true_false)
-        {
-            html = '<option value="1" selected>Yes</option><option value="0">No</option>';
-        }
-        else
-        {
-            for(var option in options)
-            {
-                if(options.hasOwnProperty(option))
-                {
-                    html += '<option value="' + options[option].position + '" ' + ( ( option.is_default ) ? 'selected' : '') + '>' + options[option].title + '</option>';
+        for (var f=0; f<feature_options.length; f++) {
+            if (feature_options[f].id == id) {
+                for (var o=0; o<feature_options[f].options.length; o++) {
+                    value_select.append('<option value="'+feature_options[f].options[o]+'">'+feature_options[f].options[o]+'</option>')
                 }
+                break;
             }
         }
 
-        $(this).next().html(html);
-
     } ).trigger('change');
 
-    $( '#squirrels-add-feature').click( function() {
-        //TODO: Add code to add aditional feature inputs
-    } );
+    $('#submit-pre-defined-feature').click(function(){
+        var feature_id = $('#pre-defined-feature-title').val();
+        for (var f=0; f<feature_options.length; f++) {
+            if (feature_options[f].id == feature_id) {
+                var title = feature_options[f].title;
+                break;
+            }
+        }
+        var value = $('#pre-defined-feature-value').val();
+        addFeature(feature_id, title, value);
+    });
+
+    $('#submit-new-feature').click(function(){
+        var title = $('#new-feature-title').val();
+        var value = $('#new-feature-value').val();
+        if (title.length == 0) {
+            alert('Please enter a title');
+        } else if (value.length == 0) {
+            alert('Please enter a value');
+        } else {
+            addFeature(0, title, value);
+        }
+    });
+
+    $('#squirrels-feature-table').on('click', '.remove-feature', function(e){
+
+        e.preventDefault();
+        var index = $(this).data('index');
+        for (var f=0; f<features.length; f++) {
+            if (index == f.index) {
+                features[f].remove = 1;
+                break;
+            }
+        }
+        $('#feature-'+index).remove();
+    });
 
     $( '#squirrels-inventory-add, #squirrels-inventory-edit' ).click( function() {
 
         var id = (typeof url_variables.id != 'undefined') ? url_variables.id : 0;
 
-        var features = {};
-
         $.ajax({
             url: ajaxurl,
             type: 'POST',
-            dataType: 'JSON',
             data: {
                 action: 'squirrels_inventory_add',
                 id: id,
@@ -232,8 +252,8 @@ var file_frame;
                 description: $('#squirrels_description').val(),
                 exterior: $('#squirrels_exterior').val(),
                 interior: $('#squirrels_interior').val(),
-                features: features,
-                images: images
+                features: JSON.stringify(features),
+                images: JSON.stringify(images)
             },
             success: function(r)
             {
@@ -377,3 +397,18 @@ var file_frame;
     });
 
 })(jQuery);
+
+function addFeature(feature_id, title, value) {
+
+    var index = features.length;
+    features.push({
+        id: '',
+        index: index,
+        feature_id: feature_id,
+        title: title,
+        value: value,
+        remove: 0
+    });
+
+    jQuery('#squirrels-feature-table').find('tbody').append('<tr id="feature-'+index+'"><td></td><td>'+title+'</td><td>'+value+'</td><td><input data-index="'+index+'" class="remove-feature button-secondary delete" value="Remove" type="button"></td></tr>')
+}

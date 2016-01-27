@@ -27,3 +27,7 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.button-delete {
+    color: red !important;
+}

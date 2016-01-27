@@ -674,14 +674,32 @@ class Controller {
 			->setIsVisible( $_REQUEST['is_visible'] )
 			->setIsFeatured( $_REQUEST['is_featured'] )
 			->setExterior( $_REQUEST['exterior'] )
-			->setInterior( $_REQUEST['interior'] )
-			->create();
+			->setInterior( $_REQUEST['interior'] );
 
-		$images = $_REQUEST['images'];
-		if (!is_array($images))
+		/* Features */
+		$features = json_decode(stripslashes($_REQUEST['features']), TRUE);
+
+		foreach ($features as $f)
 		{
-			$images = json_decode($images, TRUE);
+			if ($f['remove'] == 0)
+			{
+				$feature = new AutoFeature;
+				$feature
+					->setId(uniqid())
+					->setFeatureId($f['feature_id'])
+					->setFeatureTitle($f['title'])
+					->setValue($f['value'])
+					->setCreatedAt(time())
+					->setUpdatedAt(time());
+
+				$auto->addFeature($feature);
+			}
 		}
+
+		$auto->create();
+
+		/* Photos */
+		$images = json_decode(stripslashes($_REQUEST['images']), TRUE);
 
 		foreach ($images as $i)
 		{
