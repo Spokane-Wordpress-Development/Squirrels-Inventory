@@ -48,7 +48,7 @@ if ( isset( $_GET[ 'action' ] ) )
 				<td>
 					<select id="squirrels_auto_type">
 						<?php foreach ($auto_types as $auto_type) { ?>
-							<option value="<?php echo $auto_type->getId(); ?>">
+							<option value="<?php echo $auto_type->getId(); ?>"<?php if ($auto_type->getTitle() == 'Car') { ?> selected<?php } ?>>
 								<?php echo $auto_type->getTitle(); ?>
 							</option>
 						<?php } ?>
