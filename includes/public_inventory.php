@@ -160,7 +160,7 @@
 		<?php } else  { ?>
 
 			<p>
-				No inventory is currently available. Please check back later.
+				More inventory coming soon! Please check back later.
 			</p>
 
 		<?php } ?>
