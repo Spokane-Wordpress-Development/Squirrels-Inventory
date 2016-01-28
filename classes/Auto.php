@@ -156,6 +156,8 @@ class Auto {
 	 */
 	public function setPrice( $price )
 	{
+		$price = preg_replace( "/[^\d|\.]/", '', $price );
+
 		$this->price = (is_numeric($price)) ? abs(round($price, 2)) : NULL;
 
 		return $this;
@@ -339,7 +341,7 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setOdometerReading( $odometer_reading ) {
-		$this->odometer_reading = preg_replace("/[^\d]/","",$odometer_reading); //strip out non numbers
+		$this->odometer_reading = preg_replace( "/\D/", "", $odometer_reading ); //strip out non numbers
 
 		return $this;
 	}
