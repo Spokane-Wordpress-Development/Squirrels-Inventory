@@ -146,7 +146,7 @@ class Auto {
 	 */
 	public function getPrice()
 	{
-		return $this->price;
+		return ($this->price === NULL) ? 0 : $this->price;
 	}
 
 	/**
@@ -156,9 +156,7 @@ class Auto {
 	 */
 	public function setPrice( $price )
 	{
-		$price = preg_replace( "/[^\d|\.]/", '', $price );
-
-		$this->price = (is_numeric($price)) ? abs(round($price, 2)) : NULL;
+		$this->price = (is_numeric($price)) ? abs(round(preg_replace("/\D/", '', $price ), 2)) : NULL;
 
 		return $this;
 	}
@@ -332,7 +330,7 @@ class Auto {
 	 * @return mixed
 	 */
 	public function getOdometerReading() {
-		return $this->odometer_reading;
+		return ($this->odometer_reading === NULL) ? 0 : $this->odometer_reading;
 	}
 
 	/**
@@ -342,6 +340,10 @@ class Auto {
 	 */
 	public function setOdometerReading( $odometer_reading ) {
 		$this->odometer_reading = preg_replace( "/\D/", "", $odometer_reading ); //strip out non numbers
+		if (strlen($this->odometer_reading) == 0)
+		{
+			$this->odometer_reading = 0;
+		}
 
 		return $this;
 	}

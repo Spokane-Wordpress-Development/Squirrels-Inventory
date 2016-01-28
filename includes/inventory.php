@@ -406,7 +406,7 @@ if ( isset( $_GET[ 'action' ] ) )
 						<label for="squirrels_odometer_reading">Odometer:</label>
 					</th>
 					<td>
-						<input id="squirrels_odometer_reading" value="<?php echo htmlspecialchars($auto->getOdometerReading()); ?>" />
+						<input id="squirrels_odometer_reading" value="<?php echo number_format($auto->getOdometerReading()); ?>" />
 					</td>
 				</tr>
 
@@ -430,7 +430,7 @@ if ( isset( $_GET[ 'action' ] ) )
 						<label for="squirrels_price">Price:</label>
 					</th>
 					<td>
-						<input id="squirrels_price" value="<?php echo htmlspecialchars($auto->getPrice()); ?>" />
+						<input id="squirrels_price" value="<?php echo number_format($auto->getPrice(), 2); ?>" />
 					</td>
 				</tr>
 
