@@ -755,6 +755,7 @@ class Auto {
 					'description' => $this->description,
 					'exterior' => $this->exterior,
 					'interior' => $this->interior,
+					'features' => $this->featuresToJson(),
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 				),
 				array(
@@ -771,6 +772,7 @@ class Auto {
 					'%d',
 					'%d',
 					'%d',
+					'%s',
 					'%s',
 					'%s',
 					'%s',

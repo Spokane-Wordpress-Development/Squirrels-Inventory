@@ -750,8 +750,30 @@ class Controller {
 			->setDescription( $_REQUEST['description'] )
 			->setIsVisible( $_REQUEST['is_visible'] )
 			->setIsFeatured( $_REQUEST['is_featured'] )
-			->setOdometerReading( preg_replace('/\D/', '', $_REQUEST['odometer_reading']) )
-			->update();
+			->setOdometerReading( preg_replace('/\D/', '', $_REQUEST['odometer_reading']) );
+
+		/* Features */
+		$auto->setFeatures(NULL);
+		$features = json_decode(stripslashes($_REQUEST['features']), TRUE);
+
+		foreach ($features as $f)
+		{
+			if ($f['remove'] == 0)
+			{
+				$feature = new AutoFeature;
+				$feature
+					->setId(uniqid())
+					->setFeatureId($f['feature_id'])
+					->setFeatureTitle($f['title'])
+					->setValue($f['value'])
+					->setCreatedAt(time())
+					->setUpdatedAt(time());
+
+				$auto->addFeature($feature);
+			}
+		}
+
+		$auto->update();
 
 		$images = $_REQUEST['images'];
 		if (!is_array($images))
