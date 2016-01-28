@@ -430,7 +430,7 @@ if ( isset( $_GET[ 'action' ] ) )
 						<label for="squirrels_price">Price:</label>
 					</th>
 					<td>
-						<input id="squirrels_price" value="<?php echo number_format($auto->getPrice(), 2); ?>" />
+						<input id="squirrels_price" value="$<?php echo number_format($auto->getPrice(), 2); ?>" />
 					</td>
 				</tr>
 
