@@ -466,7 +466,7 @@ class Auto {
 	 * @return AutoFeature[]
 	 */
 	public function getFeatures() {
-		return $this->features;
+		return ($this->features === NULL) ? array() : $this->features;
 	}
 
 	/**
@@ -478,6 +478,19 @@ class Auto {
 		$this->features = $features;
 
 		return $this;
+	}
+
+	/**
+	 * @param AutoFeature $feature
+	 */
+	public function addFeature( AutoFeature $feature)
+	{
+		if ($this->features === NULL)
+		{
+			$this->features = array();
+		}
+
+		$this->features[$feature->getId()] = $feature;
 	}
 
 	/**
@@ -582,8 +595,49 @@ class Auto {
 				->setTitle($row->type);
 		}
 
-		//TODO: Create AutoFeature and set features here
-		$this->features = json_decode($row->features);
+		$features = json_decode($row->features, TRUE);
+		if (!empty($features))
+		{
+			foreach ($features as $f)
+			{
+				$feature = new AutoFeature;
+				$feature
+					->setId($f['id'])
+					->setFeatureId($f['feature_id'])
+					->setFeatureTitle($f['feature_title'])
+					->setValue($f['value'])
+					->setCreatedAt($f['created_at'])
+					->setUpdatedAt($f['updated_at']);
+
+				$this->addFeature($feature);
+			}
+		}
+	}
+
+	/**
+	 * @return mixed|string|void
+	 */
+	public function featuresToJson()
+	{
+		if ($this->features === NULL || empty($this->features))
+		{
+			return '';
+		}
+
+		$data = array();
+		foreach ($this->features as $feature)
+		{
+			$data[] = array(
+				'id' => $feature->getId(),
+				'feature_id' => $feature->getFeatureId(),
+				'feature_title' => $feature->getFeatureTitle(),
+				'value' => $feature->getValue(),
+				'created_at' => $feature->getCreatedAt(),
+				'updated_at' => $feature->getUpdatedAt()
+			);
+		}
+
+		return json_encode($data);
 	}
 
 	public function create()
@@ -612,6 +666,7 @@ class Auto {
 					'description' => $this->description,
 					'exterior' => $this->exterior,
 					'interior' => $this->interior,
+					'features' => $this->featuresToJson(),
 					'created_at' => $this->getCreatedAt( 'Y-m-d H:i:s' ),
 					'updated_at' => $this->getUpdatedAt( 'Y-m-d H:i:s' )
 				),
@@ -626,6 +681,7 @@ class Auto {
 					'%d',
 					'%d',
 					'%d',
+					'%s',
 					'%s',
 					'%s',
 					'%s',

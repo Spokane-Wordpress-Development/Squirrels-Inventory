@@ -48,7 +48,7 @@ if ( isset( $_GET[ 'action' ] ) )
 				<td>
 					<select id="squirrels_auto_type">
 						<?php foreach ($auto_types as $auto_type) { ?>
-							<option value="<?php echo $auto_type->getId(); ?>">
+							<option value="<?php echo $auto_type->getId(); ?>"<?php if ($auto_type->getTitle() == 'Car') { ?> selected<?php } ?>>
 								<?php echo $auto_type->getTitle(); ?>
 							</option>
 						<?php } ?>
@@ -184,32 +184,91 @@ if ( isset( $_GET[ 'action' ] ) )
 			</tr>
 			<tr>
 				<th><label>Features:</label></th>
-				<td>
-					<select class="squirrels-feature" id="squirrels_feature">
-						<?php foreach($features as $feature){ ?>
-							 <option value="<?php echo $feature->getId(); ?>"><?php echo $feature->getTitle(); ?></option>
-						<?php } ?>
-					</select>
+				<td colspan="3">
 
-					<select class="squirrels-feature-options" id="squirrels_feature_options">
-					</select>
+					<table id="squirrels-feature-table">
+						<thead>
+							<tr>
+								<th></th>
+								<th>Title</th>
+								<th>Value</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Add a <a href="?page=squirrels_features" target="_blank">Pre-Defined Feature</a>:</td>
+								<td>
+									<select id="pre-defined-feature-title">
+										<?php foreach ($features as $feature) { ?>
+											<option value="<?php echo $feature->getId(); ?>">
+												<?php echo $feature->getTitle(); ?>
+											</option>
+										<?php } ?>
+									</select>
+								</td>
+								<td>
+									<select id="pre-defined-feature-value"></select>
+								</td>
+								<td>
+									<input id="submit-pre-defined-feature" class="button-primary" value="Add" type="button" />
+								</td>
+							</tr>
+							<tr>
+								<td>Add a New Feature:</td>
+								<td>
+									<input id="new-feature-title" placeholder="Ex: Transmission">
+								</td>
+								<td>
+									<input id="new-feature-value" placeholder="Ex: Automatic">
+								</td>
+								<td>
+									<input id="submit-new-feature" class="button-primary" value="Add" type="button" />
+								</td>
+							</tr>
+						</tbody>
+					</table>
 
-					<input id="squirrels-add-feature" class="button-primary" value="More" type="button" />
+				</td>
+			</tr>
+			<tr>
+				<th><label>Images:</label></th>
+				<td colspan="3">
+					<p>
+						<input id="squirrels-upload-images" class="button-primary" value="Add Images" type="button" />
+					</p>
+					<div id="squirrels-images-admin"></div>
 				</td>
 			</tr>
 		</table>
 		</form>
 
-		<p>
-			<input id="squirrels-upload-images" class="button-primary" value="Upload Images" type="button" />
-		</p>
-
-		<div id="squirrels-images-admin"></div>
-
 		<script>
-			var features = <?php echo json_encode($features); ?>;
+
+			var features = [];
 			var images = [];
+
+			var feature_options = [];
+			<?php foreach ($features as $feature) { ?>
+				var options = [];
+				<?php if ($feature->isTrueFalse()) { ?>
+					options.push('Yes');
+					options.push('No');
+				<?php } else { ?>
+					<?php foreach ($feature->getOptions() as $option) { ?>
+						options.push('<?php echo str_replace("'", "\'", $option->getTitle()); ?>');
+					<?php } ?>
+				<?php } ?>
+				feature_options.push({
+					id: <?php echo $feature->getId(); ?>,
+					title: '<?php echo str_replace("'", "\'", $feature->getTitle()); ?>',
+					options: options
+				});
+			<?php } ?>
+
 		</script>
+
+		<p><em>(Hint: The "add" button is at the top!)</em></p>
 
 	<?php } elseif( $action == 'edit' ) { ?>
 
@@ -440,6 +499,8 @@ if ( isset( $_GET[ 'action' ] ) )
 					<?php } ?>
 				<?php } ?>
 			</script>
+
+			<p><em>(Hint: The "update" and "delete" buttons are at the top!)</em></p>
 
 		<?php } ?>
 
