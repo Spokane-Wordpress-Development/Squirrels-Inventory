@@ -732,7 +732,7 @@ class Controller {
 			->setDescription( $_REQUEST['description'] )
 			->setIsVisible( $_REQUEST['is_visible'] )
 			->setIsFeatured( $_REQUEST['is_featured'] )
-			->setOdometerReading( preg_replace('/\D/', '', $_REQUEST['odometer_reading']) )
+			->setOdometerReading( $_REQUEST['odometer_reading'] )
 			->update();
 
 		$images = $_REQUEST['images'];
