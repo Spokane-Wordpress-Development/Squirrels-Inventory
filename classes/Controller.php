@@ -750,6 +750,8 @@ class Controller {
 			->setDescription( $_REQUEST['description'] )
 			->setIsVisible( $_REQUEST['is_visible'] )
 			->setIsFeatured( $_REQUEST['is_featured'] )
+			->setInterior( $_REQUEST['interior'] )
+			->setExterior( $_REQUEST['exterior'] )
 			->setOdometerReading( $_REQUEST['odometer_reading'] );
 
 		/* Features */
