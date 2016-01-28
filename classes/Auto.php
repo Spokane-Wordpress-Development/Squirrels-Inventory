@@ -156,7 +156,9 @@ class Auto {
 	 */
 	public function setPrice( $price )
 	{
-		$this->price = (is_numeric($price)) ? abs(round(preg_replace("/\D/", '', $price ), 2)) : NULL;
+		$price = preg_replace( "/[^\d|\.]/", '', $price );
+
+		$this->price = (is_numeric($price)) ? abs(round($price, 2)) : NULL;
 
 		return $this;
 	}

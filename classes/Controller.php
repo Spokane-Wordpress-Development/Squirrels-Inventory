@@ -751,13 +751,11 @@ class Controller {
 			->setIsVisible( $_REQUEST['is_visible'] )
 			->setIsFeatured( $_REQUEST['is_featured'] )
 			->setOdometerReading( $_REQUEST['odometer_reading'] )
+			->setInterior( $_REQUEST['interior'] )
+			->setExterior( $_REQUEST['exterior'] )
 			->update();
 
-		$images = $_REQUEST['images'];
-		if (!is_array($images))
-		{
-			$images = json_decode($images, TRUE);
-		}
+		$images = json_decode(stripslashes($_REQUEST['images']), TRUE);
 
 		/** Remove deleted images */
 		if ($auto->getImageCount() > 0)
