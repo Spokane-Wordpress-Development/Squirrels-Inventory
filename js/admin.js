@@ -216,8 +216,9 @@ var file_frame;
 
         e.preventDefault();
         var index = $(this).data('index');
+
         for (var f=0; f<features.length; f++) {
-            if (index == f.index) {
+            if (index == features[f].index) {
                 features[f].remove = 1;
                 break;
             }
@@ -320,9 +321,9 @@ var file_frame;
 
         // Create the media frame.
         file_frame = wp.media.frames.file_frame = wp.media({
-            title: 'Upload Images',
+            title: 'Insert Images',
             button: {
-                text: 'Save'
+                text: 'Insert'
             },
             multiple: true  // Set to true to allow multiple files to be selected
         });
