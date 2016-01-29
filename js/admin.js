@@ -6,27 +6,30 @@ var file_frame;
 
     if(url_variables.action == 'add' || (url_variables.action == 'edit' && $('.squirrels-feature-custom-option').length == 0))
     {
-        addCustomFeatureOption();
+        showCustomeFeatureOptionsTable();
     }
 
-    $('#squirrels-feature-type').change(addCustomFeatureOption);
+    $('#squirrels-feature-type').change(showCustomeFeatureOptionsTable);
 
-    $('body').on('click', '.squirrels-feature-custom-option-add', function(){
-        //switch existing adds to removes
-        changeCustomFeatureAddToRemove();
+    $('body')
+        .on('click', '.squirrels-feature-custom-option-add', function(){
 
-        //add new input
-        addCustomFeatureOption();
-    }).on('click', '.squirrels-feature-custom-option-remove', function(){
-        $(this).closest('.squirrels-feature-custom-option').remove();
-    }).on('keypress', '.squirrels-feature-custom-option-input', function(e){
-        if(e.which == 13)
-        {
-            $('.squirrels-feature-custom-option-add').trigger('click');
+            //add new input
+            addCustomFeatureOption();
+        })
+        .on('click', '.squirrels-feature-custom-option-remove', function(){
 
-            $('.squirrels-feature-custom-option').first().find('input').focus();
-        }
-    });
+            $(this).closest('.squirrels-feature-custom-option').remove();
+        })
+        .on('keypress', '.squirrels-feature-custom-option-input', function(e){
+
+            if(e.which == 13)
+            {
+                $('.squirrels-feature-custom-option-add').trigger('click');
+
+                $('.squirrels-feature-custom-option').last().find('input[type=text]').focus();
+            }
+        });
 
     $('#squirrels-feature-add, #squirrels-feature-edit').click(function(){
 
@@ -132,42 +135,32 @@ var file_frame;
         return customOptions;
     }
 
-    function changeCustomFeatureAddToRemove()
+    function showCustomeFeatureOptionsTable()
     {
-        $('.squirrels-feature-custom-option-add').each(function(){
-            $(this).after(
-                '<span class="squirrels-feature-custom-option-remove dashicons dashicons-dismiss"></span>'
-            );
-
-            $(this).remove();
-        });
+        if($('#squirrels-feature-type').val() == 1)
+        {
+            $('#squirrels-feature-custom-options-table').show();
+        }
+        else
+        {
+            $('#squirrels-feature-custom-options-table').hide();
+        }
     }
 
     function addCustomFeatureOption()
     {
-        if($('#squirrels-feature-type').val() == 1)
-        {
-            var isDefault = '';
-
-            if($('.squirrels-feature-custom-option').length == 0)
-            {
-                isDefault = 'checked';
-            }
-
-            $('#squirrels-feature-custom-options').prepend(
-                '<tr class="squirrels-feature-custom-option">' +
-                '<th></th>' +
+        $('#squirrels-feature-custom-options-wrapper').append(
+            '<tr class="squirrels-feature-custom-option">' +
                 '<td>' +
-                    '<input type="radio" name="squirrels-feature-custom-option-default" ' + isDefault + '>' +
-                    '<input type="text" class="squirrels-feature-custom-option-input" /><span class="squirrels-feature-custom-option-add dashicons dashicons-plus-alt"></span>' +
+                    '<input type="radio" name="squirrels-feature-custom-option-default">' +
                 '</td>' +
-                '</tr>'
-            );
-        }
-        else
-        {
-            $('.squirrels-feature-custom-option').remove();
-        }
+                '<td>' +
+                    '<input type="text" class="squirrels-feature-custom-option-input" />' +
+                '</td>' +
+                '<td>' +
+                    '<input class="submitdelete squirrels-feature-custom-option-remove" value="Remove" type="button" />' +
+                '</td>' +
+            '</tr>');
     }
 
 
