@@ -243,11 +243,17 @@ if ( isset( $_GET[ 'action' ] ) )
 			<?php foreach ($features as $feature) { ?>
 				var options = [];
 				<?php if ($feature->isTrueFalse()) { ?>
-					options.push('Yes');
-					options.push('No');
+					options.push({
+						Yes: 1
+					});
+					options.push({
+						No: 0
+					});
 				<?php } else { ?>
 					<?php foreach ($feature->getOptions() as $option) { ?>
-						options.push('<?php echo str_replace("'", "\'", $option->getTitle()); ?>');
+						options.push({
+							'<?php echo str_replace("'", "\'", $option->getTitle()); ?>': <?php echo $option->isDefault(TRUE); ?>
+						});
 					<?php } ?>
 				<?php } ?>
 				feature_options.push({
@@ -543,11 +549,17 @@ if ( isset( $_GET[ 'action' ] ) )
 				<?php foreach ($features as $feature) { ?>
 					var options = [];
 					<?php if ($feature->isTrueFalse()) { ?>
-						options.push('Yes');
-						options.push('No');
+						options.push({
+							Yes: 1
+						});
+						options.push({
+							No: 0
+						});
 					<?php } else { ?>
 						<?php foreach ($feature->getOptions() as $option) { ?>
-							options.push('<?php echo str_replace("'", "\'", $option->getTitle()); ?>');
+							options.push({
+								'<?php echo str_replace("'", "\'", $option->getTitle()); ?>': <?php echo $option->isDefault(TRUE); ?>
+							});
 						<?php } ?>
 					<?php } ?>
 					feature_options.push({

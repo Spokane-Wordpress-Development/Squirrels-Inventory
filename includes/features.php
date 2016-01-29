@@ -89,15 +89,15 @@ if ( isset( $_GET[ 'action' ] ) )
 							<tr>
 								<th>Default</th>
 								<th>Feature Name</th>
-								<th><input class="button-primary squirrels-feature-custom-option-add" value="Add" type="button" /></th>
+								<th></th>
 							</tr>
 						</thead>
+						<tr>
+							<td></td>
+							<td><input type="text" class="squirrels-feature-custom-option-input" /></td>
+							<td><input class="button-primary squirrels-feature-custom-option-add" value="Add" type="button" /></td>
+						</tr>
 						<tbody id="squirrels-feature-custom-options-wrapper">
-							<tr class="squirrels-feature-custom-option">
-								<td><input type="radio" name="squirrels-feature-custom-option-default" /></td>
-								<td><input type="text" class="squirrels-feature-custom-option-input" /></td>
-								<td><input type="button" class="submitdelete squirrels-feature-custom-option-remove" value="Remove" /></td>
-							</tr>
 						</tbody>
 					</table>
 				</td>
@@ -155,18 +155,23 @@ if ( isset( $_GET[ 'action' ] ) )
 						<tr>
 							<th>Default</th>
 							<th>Feature Name</th>
-							<th><input class="button-primary squirrels-feature-custom-option-add" value="Add" type="button" /></th>
+							<th></th>
 						</tr>
 						</thead>
+						<tr>
+							<td></td>
+							<td><input type="text" class="squirrels-feature-custom-option-input" /></td>
+							<td><input class="button-primary squirrels-feature-custom-option-add" value="Add" type="button" /></td>
+						</tr>
 						<tbody id="squirrels-feature-custom-options-wrapper">
 						<?php if( !$feature->isTrueFalse() ) { ?>
 
 							<?php foreach( $feature->getOptions() as $index => $option ) { ?>
 
 								<tr class="squirrels-feature-custom-option">
-									<td><input type="radio" name="squirrels-feature-custom-option-default" <?php echo ( $option->isDefault() ) ? 'checked' : ''; ?> /></td>
-									<td><input type="text" class="squirrels-feature-custom-option-input" value="<?php echo $option->getTitle(); ?>" /></td>
-									<td><input type="button" class="submitdelete squirrels-feature-custom-option-remove" value="Remove" /></td>
+									<td><input type="radio" name="squirrels-feature-default" <?php echo ( $option->isDefault() ) ? 'checked' : ''; ?> /></td>
+									<td><p><?php echo $option->getTitle(); ?></p></td>
+									<td><input type="button" class="button-secondary squirrels-feature-custom-option-remove" value="Remove" /></td>
 								</tr>
 
 							<?php } ?>

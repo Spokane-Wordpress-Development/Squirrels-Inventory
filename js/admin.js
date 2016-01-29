@@ -13,9 +13,12 @@ var file_frame;
 
     $('body')
         .on('click', '.squirrels-feature-custom-option-add', function(){
+            var input = $(this).closest('tr').find('input[type=text]');
 
             //add new input
-            addCustomFeatureOption();
+            addCustomFeatureOption(input.val());
+
+            input.val('');
         })
         .on('click', '.squirrels-feature-custom-option-remove', function(){
 
@@ -120,7 +123,7 @@ var file_frame;
         var customOptions = [];
 
         $('.squirrels-feature-custom-option').each(function(){
-            var value = $(this).find('input[type="text"]').val();
+            var value = $(this).find('p').html();
             var isDefault = $(this).find('input[type="radio"]').is(':checked');
 
             if(value.length > 0)
@@ -147,18 +150,18 @@ var file_frame;
         }
     }
 
-    function addCustomFeatureOption()
+    function addCustomFeatureOption(value)
     {
         $('#squirrels-feature-custom-options-wrapper').append(
             '<tr class="squirrels-feature-custom-option">' +
                 '<td>' +
-                    '<input type="radio" name="squirrels-feature-custom-option-default">' +
+                    '<input type="radio" name="squirrels-feature-default">' +
                 '</td>' +
                 '<td>' +
-                    '<input type="text" class="squirrels-feature-custom-option-input" />' +
+                    '<p>' + value + '</p>' +
                 '</td>' +
                 '<td>' +
-                    '<input class="submitdelete squirrels-feature-custom-option-remove" value="Remove" type="button" />' +
+                    '<input class="button-secondary squirrels-feature-custom-option-remove" value="Remove" type="button" />' +
                 '</td>' +
             '</tr>');
     }
@@ -173,10 +176,23 @@ var file_frame;
         var value_select = $('#pre-defined-feature-value');
         value_select.empty();
 
-        for (var f=0; f<feature_options.length; f++) {
-            if (feature_options[f].id == id) {
-                for (var o=0; o<feature_options[f].options.length; o++) {
-                    value_select.append('<option value="'+feature_options[f].options[o]+'">'+feature_options[f].options[o]+'</option>')
+        for (var f=0; f<feature_options.length; f++)
+        {
+            if (feature_options[f].id == id)
+            {
+                for (var o=0; o<feature_options[f].options.length; o++)
+                {
+                    for( var option in feature_options[f].options[o] )
+                    {
+                        if(feature_options[f].options[o].hasOwnProperty(option))
+                        {
+                            value_select.append(
+                                '<option value="' + option + '" ' + ((feature_options[f].options[o][option] == 1) ? 'selected' : '') + '>' +
+                                option +
+                                '</option>'
+                            );
+                        }
+                    }
                 }
                 break;
             }
