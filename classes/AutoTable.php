@@ -245,7 +245,6 @@ class AutoTable extends \WP_List_Table {
 				/* This is the only part that changes from the parent. */
 				echo "<td $attributes " . ( ($column_name == 'vin' || $column_name == 'features' ) ? 'nowrap' : '' ) . ">";
 				echo $this->column_default( $item, $column_name );
-				echo $this->handle_row_actions( $item, $column_name, $primary );
 				echo "</td>";
 			}
 		}
