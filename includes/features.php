@@ -114,7 +114,7 @@ if ( isset( $_GET[ 'action' ] ) )
 				<?php echo __( 'Cancel', 'squirrels_inventory' ); ?>
 			</a>
 
-			<button id="squirrels-feature-edit" class="page-title-action"><?php echo __( 'Edit' ); ?></button>
+			<button id="squirrels-feature-edit" class="page-title-action"><?php echo __( 'Update' ); ?></button>
 		</h1>
 
 		<table class="form-table">
