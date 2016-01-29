@@ -184,7 +184,7 @@
 					<div class="col-md-4">
 						<h3 class="squirrels-title">
 							<a href="<?php echo (strlen($this->getAttribute('page'))) ? $this->getAttribute('page') : $this->base_page; ?>?sq_action=auto&sq_data=<?php echo $auto->getId(); ?>">
-								<?php echo $auto->getYear(); ?>
+								<?php echo ($auto->getYear() > 0) ? $auto->getYear() : ''; ?>
 								<?php echo $auto->getMake()->getTitle(); ?>
 								<?php echo $auto->getModel()->getTitle(); ?>
 							</a>

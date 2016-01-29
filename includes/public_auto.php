@@ -26,7 +26,7 @@ $auto = new \SquirrelsInventory\Auto($id);
 			<div class="col-md-12">
 
 				<h3 class="squirrels-title">
-					<?php echo $auto->getYear(); ?>
+					<?php echo ($auto->getYear() > 0) ? $auto->getYear() : ''; ?>
 					<?php echo $auto->getMake()->getTitle(); ?>
 					<?php echo $auto->getModel()->getTitle(); ?>
 					-
