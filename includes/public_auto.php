@@ -92,7 +92,7 @@ $auto = new \SquirrelsInventory\Auto($id);
 						<?php foreach ($auto->getImages() as $image) { ?>
 							<div class="col-md-6">
 								<a href="<?php echo $image->getUrl(); ?>" class="thickbox">
-									<img src="<?php echo $image->getUrl(); ?>">
+									<img src="<?php echo $image->getThumbnail(); ?>">
 								</a>
 							</div>
 						<?php } ?>

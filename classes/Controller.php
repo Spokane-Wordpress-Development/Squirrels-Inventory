@@ -860,6 +860,7 @@ class Controller {
 				im.is_default,
 				im.created_at AS image_created_at,
 				im.updated_at AS image_updated_at,
+				pm.meta_value,
 				si.*
 			FROM
 				" . $wpdb->prefix . "squirrels_inventory si
@@ -871,6 +872,8 @@ class Controller {
 					ON p_types.id = si.type_id
 				LEFT JOIN " . $wpdb->prefix . "squirrels_images im
 					ON si.id = im.inventory_id
+				LEFT JOIN " . $wpdb->prefix . "postmeta pm
+					ON im.media_id = pm.post_id AND pm.meta_key = '_wp_attachment_metadata'
 			WHERE
 				si.is_visible = 1";
 		if (strlen($make) > 0 && is_numeric($make))
@@ -932,17 +935,35 @@ class Controller {
 			}
 
 			if ($result->image_id !== NULL) {
+
+				$thumbnail = '';
+
+				$image_meta = maybe_unserialize( $result->meta_value );
+				if ( is_array( $image_meta ) && isset( $image_meta['sizes'] ) ) {
+					foreach ( $image_meta['sizes'] as $size => $data ) {
+						if ( $size == 'thumbnail' ) {
+							$thumbnail = $data['file'];
+							$url_parts = explode( '/', $result->url );
+							unset ( $url_parts[ count( $url_parts ) - 1 ] );
+							$url_parts[] = $thumbnail;
+							$thumbnail = implode( '/', $url_parts );
+							break;
+						}
+					}
+				}
+
 				$image = new Image;
 				$image
-					->setId($result->image_id)
-					->setInventoryId($result->id)
-					->setMediaId($result->media_id)
-					->setUrl($result->url)
-					->setIsDefault($result->is_default)
-					->setCreatedAt($result->image_created_at)
-					->setUpdatedAt($result->image_updated_at);
+					->setId( $result->image_id )
+					->setInventoryId( $result->id )
+					->setMediaId( $result->media_id )
+					->setUrl( $result->url )
+					->setThumbnail( $thumbnail )
+					->setIsDefault( $result->is_default )
+					->setCreatedAt( $result->image_created_at )
+					->setUpdatedAt( $result->image_updated_at );
 
-				$autos[$result->id]->addImage($image);
+				$autos[$result->id]->addImage( $image );
 			}
 		}
 

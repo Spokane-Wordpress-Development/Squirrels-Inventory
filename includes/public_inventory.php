@@ -176,7 +176,7 @@
 							<img class="sq-thumb" src="<?php echo plugins_url(); ?>/squirrels_inventory/images/photo_coming_soon.jpg">
 						<?php } else { ?>
 							<?php foreach ($auto->getImages() as $image) { ?>
-								<img class="sq-thumb" src="<?php echo $image->getUrl(); ?>">
+								<img class="sq-thumb" src="<?php echo $image->getThumbnail(); ?>">
 								<?php break; ?>
 							<?php } ?>
 						<?php } ?>

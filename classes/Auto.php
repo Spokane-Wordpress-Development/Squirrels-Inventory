@@ -711,6 +711,13 @@ class Auto {
 					p_makes.post_title AS make,
 					p_models.post_title AS model,
 					p_types.post_title AS `type`,
+					im.id AS image_id,
+					im.media_id,
+					im.url,
+					im.is_default,
+					im.created_at AS image_created_at,
+					im.updated_at AS image_updated_at,
+					pm.meta_value,
 					si.*
 				FROM
 					" . $wpdb->prefix . "squirrels_inventory si
@@ -720,19 +727,57 @@ class Auto {
 						ON p_models.id = si.model_id
 					JOIN " . $wpdb->prefix . "posts p_types
 						ON p_types.id = si.type_id
+					LEFT JOIN
+						" . $wpdb->prefix . "squirrels_images im
+						ON si.id = im.inventory_id
+					LEFT JOIN
+						" . $wpdb->prefix . "postmeta pm
+						ON im.media_id = pm.post_id AND pm.meta_key = '_wp_attachment_metadata'
 				WHERE
 					si.`id` = %d",
                 $this->id
 			);
 
-			if ( $row = $wpdb->get_row( $sql ) )
+			$this->id = NULL;
+			$rows = $wpdb->get_results( $sql );
+			foreach ( $rows as $result )
 			{
-				$this->loadFromRow( $row );
-				$this->loadImages();
-			}
-			else
-			{
-				$this->id = NULL;
+				if ( $this->id === NULL )
+				{
+					$this->loadFromRow( $result );
+				}
+
+				if ($result->image_id !== NULL) {
+
+					$thumbnail = '';
+
+					$image_meta = maybe_unserialize( $result->meta_value );
+					if ( is_array( $image_meta ) && isset( $image_meta['sizes'] ) ) {
+						foreach ( $image_meta['sizes'] as $size => $data ) {
+							if ( $size == 'thumbnail' ) {
+								$thumbnail = $data['file'];
+								$url_parts = explode( '/', $result->url );
+								unset ( $url_parts[ count( $url_parts ) - 1 ] );
+								$url_parts[] = $thumbnail;
+								$thumbnail = implode( '/', $url_parts );
+								break;
+							}
+						}
+					}
+
+					$image = new Image;
+					$image
+						->setId( $result->image_id )
+						->setInventoryId( $result->id )
+						->setMediaId( $result->media_id )
+						->setUrl( $result->url )
+						->setThumbnail( $thumbnail )
+						->setIsDefault( $result->is_default )
+						->setCreatedAt( $result->image_created_at )
+						->setUpdatedAt( $result->image_updated_at );
+
+					$this->addImage( $image );
+				}
 			}
 		}
 	}

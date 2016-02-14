@@ -14,6 +14,7 @@ class Image {
 	private $inventory_id;
 	private $media_id;
 	private $url;
+	private $thumbnail;
 	private $is_default = FALSE;
 	private $created_at;
 	private $updated_at;
@@ -213,6 +214,24 @@ class Image {
 	 */
 	public function setUrl( $url ) {
 		$this->url = $url;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getThumbnail() {
+		return ( $this->thumbnail === NULL) ? $this->url : $this->thumbnail;
+	}
+
+	/**
+	 * @param mixed $thumbnail
+	 *
+	 * @return Image
+	 */
+	public function setThumbnail( $thumbnail ) {
+		$this->thumbnail = ( strlen( $thumbnail ) ) > 0 ? $thumbnail : NULL;
 
 		return $this;
 	}
