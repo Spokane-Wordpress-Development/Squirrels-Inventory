@@ -517,7 +517,7 @@ if ( isset( $_GET[ 'action' ] ) )
 							<?php if ($auto->getImageCount() > 0) { ?>
 								<?php foreach ($auto->getImages() as $image) { ?>
 									<div class="image-<?php echo $image->getMediaId(); ?><?php if ($image->isDefault()) {?> default<?php } ?>">
-										<img src="<?php echo $image->getUrl(); ?>" width="250"><br>
+										<img src="<?php echo $image->getThumbnail(); ?>" width="250"><br>
 										<span class="remove" data-id="<?php echo $image->getMediaId(); ?>">remove</span>
 										|
 										<span class="default" data-id="<?php echo $image->getMediaId(); ?>">make default</span></div>
