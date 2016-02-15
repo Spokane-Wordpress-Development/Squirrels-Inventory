@@ -4,7 +4,9 @@ namespace SquirrelsInventory;
 
 class Controller {
 
-	const VERSION = '1.0';
+	const VERSION = '1.0.0';
+	const VERSION_CSS = '1.0.1';
+	const VERSION_JS = '1.0.0';
 
 	public $action = '';
 	public $data = '';
@@ -202,9 +204,9 @@ class Controller {
 		$this->base_page = $parts[0];
 
 		add_thickbox();
-		wp_enqueue_script( 'squirrels-inventory-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/squirrels.js', array( 'jquery' ), time(), TRUE );
-		wp_enqueue_style( 'squirrels-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), time() );
-		wp_enqueue_style( 'squirrels-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/squirrels_inventory.css', array(), time() );
+		wp_enqueue_script( 'squirrels-inventory-js', plugin_dir_url( dirname( __FILE__ ) ) . 'js/squirrels.js', array( 'jquery' ), self::VERSION_JS, TRUE );
+		wp_enqueue_style( 'squirrels-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/grid12.css', array(), self::VERSION_CSS );
+		wp_enqueue_style( 'squirrels-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/squirrels_inventory.css', array(), self::VERSION_CSS );
 	}
 
 	public function param( $param, $default='' )
@@ -234,8 +236,11 @@ class Controller {
 			'type' => '',
 			'search' => '',
 			'inventory' => '',
-			'page' => '',
-			'featured' => ''
+			'per_page' => '',
+			'featured' => '',
+			'pages' => 0,
+			'page' => 1,
+			'results' => 0
 		), $attributes );
 
 		switch ( $this->action )
@@ -561,10 +566,10 @@ class Controller {
 	public function enqueueAdminScripts()
 	{
 		wp_enqueue_media();
-		wp_enqueue_style( 'squirrels-admin-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/admin.css', array(), time() );
-		wp_enqueue_script( 'squirrels-admin', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin.js', array( 'jquery' ), time(), TRUE );
+		wp_enqueue_style( 'squirrels-admin-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/admin.css', array(), self::VERSION_CSS );
+		wp_enqueue_script( 'squirrels-admin', plugin_dir_url( dirname( __FILE__ ) ) . 'js/admin.js', array( 'jquery' ), self::VERSION_JS, TRUE );
 		wp_localize_script( 'squirrels-admin', 'url_variables', $_GET );
-		wp_enqueue_style( 'squirrels-admin-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css' );
+		wp_enqueue_style( 'squirrels-admin-bootstrap-css', plugin_dir_url( dirname( __FILE__ ) ) . 'css/bootstrap-tables.css', array(), self::VERSION_CSS );
 	}
 
 	/**
@@ -842,12 +847,117 @@ class Controller {
 		return $auto->getId() == NULL;
 	}
 
-	public function getCurrentInventory($make=NULL, $model=NULL, $min=NULL, $max=NULL, $order=NULL, $featured=NULL, $page=NULL)
+	public function getCurrentInventory($make=NULL, $model=NULL, $min=NULL, $max=NULL, $order=NULL, $featured=NULL, $page=1)
 	{
 		global $wpdb;
 
+		if ( ! is_numeric( $this->getAttribute( 'per_page' ) ) )
+		{
+			$page_size = ( $featured == 'true' ) ? 5 : 10;
+		}
+		else
+		{
+			$page_size = abs( round( $this->getAttribute( 'per_page' ) ) );
+		}
+
+		$page = ( is_numeric( $page ) ) ? abs( round( $page ) ) : 1;
+
 		/** @var Auto[] $autos */
 		$autos = array();
+
+		$from = "
+			" . $wpdb->prefix . "squirrels_inventory si
+				JOIN " . $wpdb->prefix . "posts p_makes
+					ON p_makes.id = si.make_id
+				JOIN " . $wpdb->prefix . "posts p_models
+					ON p_models.id = si.model_id
+				JOIN " . $wpdb->prefix . "posts p_types
+					ON p_types.id = si.type_id
+				LEFT JOIN " . $wpdb->prefix . "squirrels_images im
+					ON si.id = im.inventory_id
+				LEFT JOIN " . $wpdb->prefix . "postmeta pm
+					ON im.media_id = pm.post_id AND pm.meta_key = '_wp_attachment_metadata'";
+
+		$where = "
+			si.is_visible = 1";
+			if (strlen($make) > 0 && is_numeric($make))
+			{
+				$where .= "
+                    AND si.make_id = " . abs(round($make));
+			}
+			if (strlen($model) > 0 && is_numeric($model))
+			{
+				$where .= "
+                    AND si.model_id = " . abs(round($model));
+			}
+			if (strlen($min) > 0 && is_numeric($min))
+			{
+				$where .= "
+                    AND COALESCE(si.price, 0) >= " . abs(round($min));
+			}
+			if (strlen($max) > 0 && is_numeric($max))
+			{
+				$where .= "
+                    AND COALESCE(si.price, 0) <= " . abs(round($max));
+			}
+			if ($featured == 'true')
+			{
+				$where .= "
+                    AND si.is_featured = 1";
+			}
+
+		switch ( $order )
+		{
+			case 'price_asc':
+				$order_by = "
+					COALESCE(si.price, 0) ASC";
+				break;
+			case 'price_desc':
+				$order_by = "
+					COALESCE(si.price, 0) DESC";
+				break;
+			case 'year_asc':
+				$order_by = "
+					si.year ASC";
+				break;
+			case 'year_desc':
+				$order_by = "
+					si.year DESC";
+				break;
+			default:
+				$order_by = "
+					p_makes.post_title, p_models.post_title";
+		}
+		$order_by .= ",im.is_default DESC, im.id";
+
+		$sql = "
+			SELECT
+				COUNT( DISTINCT si.id) AS result_count
+			FROM
+				" . $from . "
+			WHERE
+				" . $where;
+		$result = $wpdb->get_row( $sql );
+
+		$this->attributes['results'] = $result->result_count;
+		$this->attributes['pages'] = ceil( $result->result_count / $page_size );
+
+		$sql = "
+			SELECT
+				DISTINCT si.id
+			FROM
+				" . $from . "
+			WHERE
+				" . $where . "
+			ORDER BY
+				" . $order_by . "
+			LIMIT " . round( $page_size * ( $page - 1 ) ) . ", " . $page_size;
+		$ids = array();
+		$results = $wpdb->get_results( $sql );
+		foreach ( $results as $result )
+		{
+			$ids[] = $result->id;
+		}
 
 		$sql = "
 			SELECT
@@ -863,67 +973,11 @@ class Controller {
 				pm.meta_value,
 				si.*
 			FROM
-				" . $wpdb->prefix . "squirrels_inventory si
-				JOIN " . $wpdb->prefix . "posts p_makes
-					ON p_makes.id = si.make_id
-				JOIN " . $wpdb->prefix . "posts p_models
-					ON p_models.id = si.model_id
-				JOIN " . $wpdb->prefix . "posts p_types
-					ON p_types.id = si.type_id
-				LEFT JOIN " . $wpdb->prefix . "squirrels_images im
-					ON si.id = im.inventory_id
-				LEFT JOIN " . $wpdb->prefix . "postmeta pm
-					ON im.media_id = pm.post_id AND pm.meta_key = '_wp_attachment_metadata'
+				" . $from . "
 			WHERE
-				si.is_visible = 1";
-		if (strlen($make) > 0 && is_numeric($make))
-		{
-			$sql .= "
-				AND si.make_id = " . abs(round($make));
-		}
-		if (strlen($model) > 0 && is_numeric($model))
-		{
-			$sql .= "
-				AND si.model_id = " . abs(round($model));
-		}
-		if (strlen($min) > 0 && is_numeric($min))
-		{
-			$sql .= "
-				AND COALESCE(si.price, 0) >= " . abs(round($min));
-		}
-		if (strlen($max) > 0 && is_numeric($max))
-		{
-			$sql .= "
-				AND COALESCE(si.price, 0) <= " . abs(round($max));
-		}
-		if ($featured == 'true')
-		{
-			$sql .= "
-				AND si.is_featured = 1";
-		}
-		switch ($order)
-		{
-			case 'price_asc':
-				$sql .= "
-					ORDER BY COALESCE(si.price, 0) ASC";
-				break;
-			case 'price_desc':
-				$sql .= "
-					ORDER BY COALESCE(si.price, 0) DESC";
-				break;
-			case 'year_asc':
-				$sql .= "
-					ORDER BY si.year ASC";
-				break;
-			case 'year_desc':
-				$sql .= "
-					ORDER BY si.year DESC";
-				break;
-			default:
-				$sql .= "
-					ORDER BY 1,2";
-		}
-		$sql .= ",im.is_default DESC, im.id";
+				si.id IN ( " . implode( ',', $ids ) . " )
+			ORDER BY
+				" . $order_by;
 
 		$results = $wpdb->get_results( $sql );
 		foreach( $results as $result )

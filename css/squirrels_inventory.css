@@ -16,3 +16,15 @@
 .squirrels-inventory .row {
     margin-bottom: 10px;
 }
+
+.squirrels-pagination a {
+    text-decoration: underline;
+    padding: 2px 5px;
+}
+
+.squirrels-pagination a.squirrels-active {
+    text-decoration: none;
+    border: 1px solid #000;
+    border-radius: 3px;
+    background: #EEE;
+}

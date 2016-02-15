@@ -141,7 +141,7 @@
 	$min = (isset($_GET['min'])) ? $_GET['min'] : '';
 	$max = (isset($_GET['max'])) ? $_GET['max'] : '';
 	$order = (isset($_GET['order'])) ? $_GET['order'] : '';
-	$page = (isset($_GET['page'])) ? $_GET['page'] : '';
+	$page = (isset($_GET['autopage'])) ? $_GET['autopage'] : 1;
 	$featured = $this->getAttribute('featured');
 
 	/** @var \SquirrelsInventory\Auto[] $autos */
@@ -168,6 +168,32 @@
 	<?php } else { ?>
 
 		<div class="squirrels squirrels-inventory">
+
+			<?php if ( $this->getAttribute('featured') != 'true' ) { ?>
+
+				<div class="row">
+
+					<p style="margin-bottom:5px;">
+						<?php echo $this->getAttribute( 'results' ); ?>
+						record<?php echo ( $this->getAttribute( 'results' ) != 1 ) ? 's' : ''; ?>
+						found
+					</p>
+
+					<?php if ( $this->getAttribute( 'pages' ) > 1 ) { ?>
+						<p class="squirrels-pagination">
+							Page:
+							<?php for ( $x=1; $x<=$this->getAttribute( 'pages' ); $x++ ) { ?>
+								<?php if ( $x != 1 ) { ?>
+								|
+								<?php } ?>
+								<a href="?autopage=<?php echo $x; ?>"<?php if ($x == $page ) { ?> class="squirrels-active"<?php } ?>><?php echo $x; ?></a>
+							<?php } ?>
+						</p>
+					<?php } ?>
+
+				</div>
+
+			<?php } ?>
 
 			<?php foreach ($autos as $auto) { ?>
 				<div class="row">

@@ -6,6 +6,10 @@
 
 	[squirrels_inventory]
 
+	<h3><?php echo __( 'Specify how many vehicles to show per page', 'squirrels_inventory'); ?>:</h3>
+
+	[squirrels_inventory search="Off" per_page="25"]
+
 	<h3><?php echo __( 'Turn off the search', 'squirrels_inventory'); ?>:</h3>
 
 	[squirrels_inventory search="Off"]
