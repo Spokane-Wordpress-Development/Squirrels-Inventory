@@ -2,14 +2,31 @@
 
 /**
  * Plugin Name: Squirrels Inventory
- * Plugin URI: http://www.ibrake4squirrels.com
- * Description: Auto Inventory Plug-In
+ * Plugin URI: http://www.spokanewp.com/portfolio
+ * Description: A simple and lightweight auto inventory system perfect for showcasing your cars online.
+ * Author: Spokane WordPress Development
+ * Author URI: http://www.spokanewp.com
  * Version: 1.0.0
- * Author: Tony DeStefano, Ethan Federman
- * Text Domain:
- * Domain Path:
- * Network:
- * License: GPL2
+ * Text Domain: squirrels_inventory
+ *
+ * Copyright 2016 Spokane WordPress Development
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License, version 2, as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * @package CaptainCountdown
+ * @author Spokane WordPress Development
+ * @version 1.0.0
  */
 
 require_once ( 'classes/Controller.php' );
