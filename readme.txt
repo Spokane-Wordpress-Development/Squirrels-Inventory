@@ -1,4 +1,4 @@
-=== Squirrels Inventory ===
+=== Squirrels Auto Inventory ===
 Contributors: spokanetony, efederman22
 Donate link: https://www.paypal.me/SpokaneTony
 Tags: inventory, auto inventory, car inventory, truck inventory

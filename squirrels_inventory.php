@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Squirrels Inventory
+ * Plugin Name: Squirrels Auto Inventory
  * Plugin URI: http://www.spokanewp.com/portfolio
  * Description: A simple and lightweight auto inventory system perfect for showcasing your cars online.
  * Author: Spokane WordPress Development
