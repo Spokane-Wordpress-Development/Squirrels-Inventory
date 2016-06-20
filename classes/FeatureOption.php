@@ -35,11 +35,11 @@ class FeatureOption implements \JsonSerializable {
 
 	public function jsonSerialize() {
 
-		return [
+		return array(
 			'title' => $this->title,
 			'position' => $this->position,
 			'is_default' => $this->is_default
-		];
+		);
 
 	}
 

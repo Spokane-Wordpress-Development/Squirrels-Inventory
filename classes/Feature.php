@@ -32,7 +32,7 @@ class Feature implements \JsonSerializable{
 
 	public function jsonSerialize() {
 
-		return [
+		return array(
 			'id' => $this->id,
 			'title' => $this->title,
 			'is_system' => $this->is_system,
@@ -40,7 +40,7 @@ class Feature implements \JsonSerializable{
 			'created_at' => $this->created_at,
 			'updated_at' => $this->updated_at,
 			'options' => $this->options
-		];
+		);
 
 	}
 
