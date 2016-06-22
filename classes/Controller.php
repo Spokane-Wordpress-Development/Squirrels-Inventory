@@ -8,6 +8,9 @@ class Controller {
 	const VERSION_CSS = '1.0.1';
 	const VERSION_JS = '1.0.0';
 
+	const DEFAULT_DATE_FORMAT = 'm/d/yyyy';
+	const DEFAULT_MILEAGE_LABEL = 'mileage';
+
 	public $action = '';
 	public $data = '';
 	public $return = '';
@@ -15,6 +18,79 @@ class Controller {
 	public $base_page = '';
 	public $has_displayed_search = FALSE;
 	public $has_displayed_inventory = FALSE;
+
+	/**
+	 * @param bool $for_date_function
+	 *
+	 * @return mixed|void
+	 */
+	public static function getDateFormat( $for_date_function=FALSE )
+	{
+		$format = strtolower( get_option( 'squirrels_inventory_date_format', self::DEFAULT_DATE_FORMAT ) );
+
+		if ( $for_date_function )
+		{
+			$format = str_replace( 'yyyy', 'Y', $format );
+			$format = str_replace( 'yy', 'y', $format );
+			$format = str_replace( 'm', 'n', $format );
+			$format = str_replace( 'nn', 'm', $format );
+			$format = str_replace( 'd', 'j', $format );
+			$format = str_replace( 'jj', 'd', $format );
+		}
+
+		return $format;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function getDateFormats()
+	{
+		return array(
+			'm/d/yyyy',
+			'm/d/yy',
+			'mm/dd/yyyy',
+			'm-d-yyyy',
+			'm-d-yy',
+			'mm-dd-yyyy',
+			'd/m/yyyy',
+			'd/m/yy',
+			'dd/mm/yyyy',
+			'd-m-yyyy',
+			'd-m-yy',
+			'dd-mm-yyyy',
+			'yyyy-mm-dd',
+			'yyyy-dd-mm'
+		);
+	}
+
+	/**
+	 * @param bool $init_cap
+	 *
+	 * @return mixed|string|void
+	 */
+	public static function getMileageLabel( $init_cap=FALSE )
+	{
+		$label = str_replace( '"', '', get_option( 'squirrels_inventory_mileage_label', self::DEFAULT_MILEAGE_LABEL ) );
+
+		if ( strlen( trim( $label ) ) == 0 )
+		{
+			$label = self::DEFAULT_MILEAGE_LABEL;
+		}
+
+		if ( $init_cap )
+		{
+			return ucfirst( $label );
+		}
+		
+		return $label;
+	}
+
+	public function registerSettings()
+	{
+		register_setting( 'squirrels_inventory_settings', 'squirrels_inventory_date_format' );
+		register_setting( 'squirrels_inventory_settings', 'squirrels_inventory_mileage_label' );
+	}
 
 	public function activate()
 	{

@@ -1,13 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Tony DeStefano
- * Date: 1/24/16
- * Time: 4:07 PM
- */
 
-$id = (is_numeric($this->data)) ? abs(round($this->data)) : 0;
-$auto = new \SquirrelsInventory\Auto($id);
+/** @var \SquirrelsInventory\Controller $this */
+
+$id = ( is_numeric( $this->data ) ) ? abs( round( $this->data ) ) : 0;
+$auto = new \SquirrelsInventory\Auto( $id );
 
 ?>
 
@@ -56,7 +52,7 @@ $auto = new \SquirrelsInventory\Auto($id);
 					<?php } ?>
 					<?php if (strlen($auto->getOdometerReading()) > 0) { ?>
 						<tr>
-							<th>Mileage:</th>
+							<th><?php echo \SquirrelsInventory\Controller::getMileageLabel( TRUE ); ?>:</th>
 							<td><?php echo number_format($auto->getOdometerReading()); ?></td>
 						</tr>
 					<?php } ?>

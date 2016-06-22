@@ -32,7 +32,7 @@ class AutoTable extends \WP_List_Table {
 			'model' => __( 'Model', 'squirrels_inventory'),
 			'year' => __( 'Year', 'squirrels_inventory'),
 			'vin' => __( 'Vin', 'squirrels_inventory'),
-			'odometer_reading' => __( 'Odometer', 'squirrels_inventory' ),
+			'odometer_reading' => __( Controller::getMileageLabel( TRUE ), 'squirrels_inventory' ),
 			'price' => __( 'Price', 'squirrels_inventory' ),
 			'is_visible' => __( 'Visible', 'squirrels_inventory' ),
 			'is_featured' => __( 'Featured', 'squirrels_inventory' ),
@@ -77,7 +77,7 @@ class AutoTable extends \WP_List_Table {
 			case 'year':
 				return $item->$column_name;
 			case 'updated_at':
-				return date('n/j/Y', strtotime( $item->$column_name ) );
+				return date( Controller::getDateFormat( TRUE ), strtotime( $item->$column_name ) );
 			case 'is_visible':
 			case 'is_featured':
 				return ( filter_var( $item->$column_name, FILTER_VALIDATE_BOOLEAN ) ) ? __( 'Yes', 'squirrels_inventory' ) : __( 'No', 'squirrels_inventory' ) ;

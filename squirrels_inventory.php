@@ -63,6 +63,9 @@ add_shortcode ( 'squirrels_inventory', array( $squirrel, 'shortCode') );
 /** Only run these hooks if logged into the admin screen */
 if ( is_admin() )
 {
+	/** register settings **/
+	add_action( 'admin_init', array( $squirrel, 'registerSettings' ) );
+	
 	/** Add main menu and sub-menus */
 	add_action( 'admin_menu', array( $squirrel, 'addMenus') );
 

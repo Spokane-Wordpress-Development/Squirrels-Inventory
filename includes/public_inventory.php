@@ -1,3 +1,9 @@
+<?php
+
+/** @var \SquirrelsInventory\Controller $this */
+
+?>
+
 <?php if ($this->getAttribute('search') != 'off' && !$this->has_displayed_search) { ?>
 
 	<?php
@@ -219,7 +225,7 @@
 							<br>VIN: <?php echo $auto->getVin(); ?>
 						<?php } ?>
 						<?php if (strlen($auto->getOdometerReading()) > 0) { ?>
-							<br>Mileage: <?php echo number_format($auto->getOdometerReading()); ?>
+							<br><?php echo \SquirrelsInventory\Controller::getMileageLabel( TRUE ); ?>: <?php echo number_format($auto->getOdometerReading()); ?>
 						<?php } ?>
 					</div>
 					<div class="col-md-4">
