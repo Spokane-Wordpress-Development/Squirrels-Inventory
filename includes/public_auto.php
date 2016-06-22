@@ -30,6 +30,7 @@ $auto = new \SquirrelsInventory\Auto( $id );
 						Call for Price
 					<?php } else { ?>
 						$<?php echo number_format($auto->getPrice(), 2); ?>
+						<?php echo $auto->getPricePostfix(); ?>
 					<?php } ?>
 				</h3>
 

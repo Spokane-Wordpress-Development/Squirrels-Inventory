@@ -6,7 +6,7 @@
  * Description: A simple and lightweight auto inventory system perfect for showcasing your cars online.
  * Author: Spokane WordPress Development
  * Author URI: http://www.spokanewp.com
- * Version: 1.0.1
+ * Version: 1.0.2
  * Text Domain: squirrels_inventory
  *
  * Copyright 2016 Spokane WordPress Development
@@ -63,6 +63,9 @@ add_shortcode ( 'squirrels_inventory', array( $squirrel, 'shortCode') );
 /** Only run these hooks if logged into the admin screen */
 if ( is_admin() )
 {
+	/** check for version update **/
+	add_action( 'admin_init', array( $squirrel, 'checkForUpdate' ) );
+	
 	/** register settings **/
 	add_action( 'admin_init', array( $squirrel, 'registerSettings' ) );
 	

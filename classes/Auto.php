@@ -3,6 +3,8 @@
 namespace SquirrelsInventory;
 
 class Auto {
+	
+	const TABLE_NAME = 'squirrels_inventory';
 
 	/** @var AutoFeature[] $features */
 	private $features;
@@ -31,6 +33,7 @@ class Auto {
 	private $is_featured = FALSE;
 	private $description;
 	private $price;
+	private $price_postfix;
 	private $exterior;
 	private $interior;
 	private $created_at;
@@ -146,7 +149,7 @@ class Auto {
 	 */
 	public function getPrice()
 	{
-		return ($this->price === NULL) ? 0 : $this->price;
+		return ( $this->price === NULL ) ? 0 : $this->price;
 	}
 
 	/**
@@ -156,9 +159,29 @@ class Auto {
 	 */
 	public function setPrice( $price )
 	{
-		$price = preg_replace( "/[^\d|\.]/", '', $price );
+		$price = preg_replace( '/[^\d|\.]/', '', $price );
 
 		$this->price = (is_numeric($price)) ? abs(round($price, 2)) : NULL;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getPricePostfix()
+	{
+		return ( $this->price_postfix === NULL ) ? '' : $this->price_postfix;
+	}
+
+	/**
+	 * @param mixed $price_postfix
+	 *
+	 * @return Auto
+	 */
+	public function setPricePostfix( $price_postfix )
+	{
+		$this->price_postfix = $price_postfix;
 
 		return $this;
 	}
@@ -341,7 +364,7 @@ class Auto {
 	 * @return Auto
 	 */
 	public function setOdometerReading( $odometer_reading ) {
-		$this->odometer_reading = preg_replace( "/\D/", "", $odometer_reading ); //strip out non numbers
+		$this->odometer_reading = preg_replace( '/\D/', '', $odometer_reading ); //strip out non numbers
 		if (strlen($this->odometer_reading) == 0)
 		{
 			$this->odometer_reading = 0;
@@ -569,6 +592,7 @@ class Auto {
 			->setOdometerReading( $row->odometer_reading )
 			->setDescription( $row->description )
 			->setPrice( $row->price )
+			->setPricePostfix( $row->price_postfix )
 			->setIsVisible( $row->is_visible )
 			->setIsFeatured( $row->is_featured )
 			->setExterior( $row->exterior )
@@ -657,9 +681,10 @@ class Auto {
 				->setUpdatedAt( time() );
 
 			$wpdb->insert(
-				$wpdb->prefix . 'squirrels_inventory',
+				$wpdb->prefix . self::TABLE_NAME,
 				array(
 					'price' => $this->price,
+					'price_postfix' => $this->price_postfix,
 					'type_id' => $this->type_id,
 					'inventory_number' => $this->inventory_number,
 					'vin' => $this->vin,
@@ -678,6 +703,7 @@ class Auto {
 				),
 				array(
 					'%f',
+					'%s',
 					'%d',
 					'%s',
 					'%s',
@@ -720,7 +746,7 @@ class Auto {
 					pm.meta_value,
 					si.*
 				FROM
-					" . $wpdb->prefix . "squirrels_inventory si
+					" . $wpdb->prefix . self::TABLE_NAME . " si
 					JOIN " . $wpdb->prefix . "posts p_makes
 						ON p_makes.id = si.make_id
 					JOIN " . $wpdb->prefix . "posts p_models
@@ -791,9 +817,10 @@ class Auto {
 			$this->setUpdatedAt( time() );
 
 			$wpdb->update(
-				$wpdb->prefix . 'squirrels_inventory',
+				$wpdb->prefix . self::TABLE_NAME,
 				array(
 					'price' => $this->price,
+					'price_postfix' => $this->price_postfix,
 					'type_id' => $this->type_id,
 					'inventory_number' => $this->inventory_number,
 					'vin' => $this->vin,
@@ -814,6 +841,7 @@ class Auto {
 				),
 				array(
 					'%f',
+					'%s',
 					'%d',
 					'%s',
 					'%s',
@@ -843,7 +871,7 @@ class Auto {
 		if ($this->id !== NULL) {
 
 			$wpdb->delete(
-				$wpdb->prefix . 'squirrels_inventory',
+				$wpdb->prefix . self::TABLE_NAME,
 				array(
 					'id' => $this->id
 				),

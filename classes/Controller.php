@@ -91,6 +91,47 @@ class Controller {
 		register_setting( 'squirrels_inventory_settings', 'squirrels_inventory_date_format' );
 		register_setting( 'squirrels_inventory_settings', 'squirrels_inventory_mileage_label' );
 	}
+	
+	public function checkForUpdate()
+	{
+		require_once( ABSPATH . '/wp-admin/includes/upgrade.php' );
+		global $wpdb;
+		
+		$version = get_option( 'squirrels_inventory_version', '' );
+		if ( $version != self::VERSION )
+		{
+			/** SQUIRRELS_INVENTORY table */
+			$sql = "
+				CREATE TABLE " . $wpdb->prefix . Auto::TABLE_NAME . " (
+					id INT(11) NOT NULL AUTO_INCREMENT,
+					inventory_number VARCHAR(50) DEFAULT NULL,
+					vin VARCHAR(50) DEFAULT NULL,
+					type_id INT(11) DEFAULT NULL,
+					make_id INT(11) DEFAULT NULL,
+					model_id INT(11) DEFAULT NULL,
+					year INT(2) DEFAULT NULL,
+					odometer_reading INT(11) DEFAULT NULL,
+					features TEXT,
+					is_visible TINYINT(4) DEFAULT 0,
+					is_featured TINYINT(4) DEFAULT 0,
+					description TEXT,
+					price DECIMAL(11,4) DEFAULT NULL,
+					price_postfix VARCHAR(50) DEFAULT NULL,
+					exterior VARCHAR(50) DEFAULT NULL,
+					interior VARCHAR(50) DEFAULT NULL,
+					created_at DATETIME DEFAULT NULL,
+					imported_at DATETIME DEFAULT NULL,
+					updated_at DATETIME DEFAULT NULL,
+					PRIMARY KEY  (id),
+					KEY type_id (type_id),
+					KEY make_id (make_id),
+					KEY model_id (model_id)
+				)";
+			dbDelta( $sql );
+
+			update_option( 'squirrels_inventory_version', self::VERSION );
+		}
+	}
 
 	public function activate()
 	{
@@ -128,7 +169,7 @@ class Controller {
 		}
 
 		/** SQUIRRELS_INVENTORY table */
-		$table = $wpdb->prefix . "squirrels_inventory";
+		$table = $wpdb->prefix . Auto::TABLE_NAME;
 		if( $wpdb->get_var( "SHOW TABLES LIKE '" . $table . "'" ) != $table ) {
 			$sql = "
 				CREATE TABLE `" . $table . "`
@@ -744,6 +785,7 @@ class Controller {
 		$auto = new Auto();
 		$auto
 			->setPrice( preg_replace('/[^0-9\.]/', '', $_REQUEST['price']) )
+			->setPricePostfix( $_REQUEST['price_postfix'] )
 			->setTypeId( $_REQUEST['type_id'] )
 			->setInventoryNumber( $_REQUEST['inventory_number'] )
 			->setVin( $_REQUEST['vin'] )
@@ -822,6 +864,7 @@ class Controller {
 		$auto = new Auto( $_REQUEST['id'] );
 		$auto
 			->setPrice( $_REQUEST['price'] )
+			->setPricePostfix( $_REQUEST['price_postfix'] )
 			->setTypeId( $_REQUEST['type_id'] )
 			->setInventoryNumber( $_REQUEST['inventory_number'] )
 			->setVin( $_REQUEST['vin'] )

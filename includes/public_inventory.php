@@ -233,6 +233,7 @@
 							Call For Pricing
 						<?php } else { ?>
 							$<?php echo number_format($auto->getPrice(), 2); ?>
+							<?php echo $auto->getPricePostfix(); ?>
 						<?php } ?>
 					</div>
 				</div>

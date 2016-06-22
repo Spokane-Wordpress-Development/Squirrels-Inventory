@@ -171,6 +171,12 @@ if ( isset( $_GET[ 'action' ] ) )
 				<td>
 					<input id="squirrels_price" />
 				</td>
+				<th>
+					<label for="squirrels_price_postfix">Text After Price:</label>
+				</th>
+				<td>
+					<input id="squirrels_price_postfix" placeholder="ex: OBO"  />
+				</td>
 			</tr>
 
 			<tr>
@@ -437,6 +443,12 @@ if ( isset( $_GET[ 'action' ] ) )
 					</th>
 					<td>
 						<input id="squirrels_price" value="$<?php echo number_format($auto->getPrice(), 2); ?>" />
+					</td>
+					<th>
+						<label for="squirrels_price_postfix">Text After Price:</label>
+					</th>
+					<td>
+						<input id="squirrels_price_postfix" value="<?php echo esc_html( $auto->getPricePostfix() ); ?>" />
 					</td>
 				</tr>
 

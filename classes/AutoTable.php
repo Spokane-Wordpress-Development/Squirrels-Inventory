@@ -84,7 +84,7 @@ class AutoTable extends \WP_List_Table {
 			case 'odometer_reading':
 				return number_format( $item->$column_name );
 			case 'price':
-				return '$' . number_format( $item->$column_name, 2 );
+				return trim( '$' . number_format( $item->$column_name, 2 ) . ' ' . $item->price_postfix );
 			case 'edit':
 				return '<a href="?page=' . $_REQUEST['page'] . '&action=edit&id=' . $item->id . '" class="button-primary">' . __('Edit', 'squirrels_inventory') . '</a>';
 			default:
@@ -113,7 +113,7 @@ class AutoTable extends \WP_List_Table {
 				p_types.post_title AS `type`,
 				si.*
 			FROM
-				" . $wpdb->prefix . "squirrels_inventory si
+				" . $wpdb->prefix . Auto::TABLE_NAME . " si
 				JOIN " . $wpdb->prefix . "posts p_makes
 					ON p_makes.id = si.make_id
 				JOIN " . $wpdb->prefix . "posts p_models

@@ -253,6 +253,7 @@ var file_frame;
                 action: 'squirrels_inventory_add',
                 id: id,
                 price: $('#squirrels_price').val(),
+                price_postfix: $('#squirrels_price_postfix').val(),
                 type_id: $('#squirrels_auto_type').val(),
                 model_id: $('#squirrels_vehicle').val(),
                 new_make: $('#squirrels_new_make').val(),
