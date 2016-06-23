@@ -159,42 +159,6 @@ class AutoTable extends \WP_List_Table {
 		$this->_column_headers = array( $columns, $hidden, $sortable );
 
 		$this->items = $wpdb->get_results( $sql );
-
-		/*
-		 * Can't join the feature tables to the inventory table as the features are stored in a json array.
-		 * Grabbing all the features because if we have the whole inventory then we will be using all the features.
-		 */
-		$features = Feature::getAllFeatures();
-
-		/*
-		 * Looping through the retrieved items
-		 */
-		foreach( $this->items as $index => $item )
-		{
-			if( $item->features != NULL )
-			{
-				$feature_ids = json_decode( $item->features );
-
-				// Loop through each of the assigned features in each item in the inventory
-				foreach( $feature_ids as $feature_id => $option_index )
-				{
-					if( isset( $features[ $feature_id ] ) )
-					{
-						//No entry in the inventory item object called 'features'. This will be an array of feature title to option selected
-						if( $features[ $feature_id ]->isTrueFalse() )
-						{
-							$this->items[ $index ]->selected_features[ $features[ $feature_id ]->getTitle() ] = null;
-						}
-						else
-						{
-							$options = $features[ $feature_id ]->getOptions();
-
-							$this->items[ $index ]->selected_features[ $features[ $feature_id ]->getTitle()] = $options[ $option_index ]->getTitle();
-						}
-					}
-				}
-			}
-		}
 	}
 
 	/**
