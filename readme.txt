@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/SpokaneTony
 Tags: inventory, auto inventory, car inventory, truck inventory
 Requires at least: 3.0.1
 Tested up to: 4.5.3
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -71,3 +71,6 @@ This is a first release.
 = 1.0.2 =
 * Added settings for dateformat and mileage label
 * Added ability to put text after the price (example: $9,999 OBO)
+
+= 1.0.3 =
+* A little bug fix
